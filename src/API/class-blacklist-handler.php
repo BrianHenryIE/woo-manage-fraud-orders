@@ -6,7 +6,7 @@
  * @package woo-manage-fraud-orders
  */
 
-namespace PrasidhdaMalla\Woo_Manage_Fraud_Orders\Includes;
+namespace PrasidhdaMalla\Woo_Manage_Fraud_Orders\API;
 
 /**
  * Class Blacklist_Handler
