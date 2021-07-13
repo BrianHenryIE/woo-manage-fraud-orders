@@ -86,9 +86,11 @@ if ( ! class_exists( 'Woo_Manage_Fraud_Orders' ) ) {
 
 			$plugins_page = new Plugins_Page();
 			add_filter( 'plugin_action_links_' . plugin_basename( WMFO_PLUGIN_FILE ), array( $plugins_page, 'action_links' ), 99, 1 );
-			add_action( 'plugins_loaded', array( $this, 'load_text_domain' ) );
+
 			add_action('init', array($this, 'may_be_create_log_dir_db_table'));
 			add_action('admin_menu', array($this, 'init_sub_menu'), 9999);
+			$i18n = new I18n();
+			add_action( 'plugins_loaded', array( $i18n, 'load_plugin_textdomain' ) );
 		}
 
 		/**
@@ -139,19 +141,6 @@ if ( ! class_exists( 'Woo_Manage_Fraud_Orders' ) ) {
 
 		}
 
-
-		/**
-		 * Load text domain for translation
-		 *
-		 * @hooked plugins_loaded
-		 */
-		public function load_text_domain() {
-			load_plugin_textdomain(
-				'woo-manage-fraud-orders',
-				false,
-				dirname( dirname( plugin_basename( __FILE__ ) ) ) . '/languages/'
-			);
-		}
 
 		/**
 		 * Include required files.
