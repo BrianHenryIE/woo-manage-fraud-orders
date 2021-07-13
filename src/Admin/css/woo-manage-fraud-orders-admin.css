@@ -1,0 +1,9 @@
+/**
+ * All of the CSS for your admin-specific functionality should be
+ * included in this file.
+ */
+
+.wrap.woocommerce .forminp.forminp-multiselect span.description {
+	display: block;
+	padding: 10px 0 0;
+}

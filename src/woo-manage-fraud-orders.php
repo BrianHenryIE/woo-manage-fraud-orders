@@ -28,23 +28,3 @@ require_once __DIR__ . '/autoload.php';
 
 // Initialize the plugin.
 $GLOBALS['woo_manage_fraud_orders'] = new Woo_Manage_Fraud_Orders();
-
-
-/**
- * Admin Styling
- */
-add_action(
-	'admin_head',
-	function () {
-        // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		if ( isset( $_GET['tab'] ) && 'settings_tab_blacklists' === $_GET['tab'] ) : ?>
-			<style>
-				.wrap.woocommerce .forminp.forminp-multiselect span.description {
-					display: block;
-					padding: 10px 0 0;
-				}
-			</style>
-			<?php
-		endif;
-	}
-);
