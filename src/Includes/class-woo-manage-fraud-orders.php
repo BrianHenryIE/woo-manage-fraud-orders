@@ -9,6 +9,7 @@
 
 namespace PrasidhdaMalla\Woo_Manage_Fraud_Orders\Includes;
 
+use PrasidhdaMalla\Woo_Manage_Fraud_Orders\Admin\Dependencies;
 use PrasidhdaMalla\Woo_Manage_Fraud_Orders\Admin\Plugins_Page;
 use PrasidhdaMalla\Woo_Manage_Fraud_Orders\WooCommerce\Bulk_Blacklist;
 use PrasidhdaMalla\Woo_Manage_Fraud_Orders\WooCommerce\Order_Actions;
@@ -47,6 +48,7 @@ class Woo_Manage_Fraud_Orders {
 		$i18n = new I18n();
 		add_action( 'plugins_loaded', array( $i18n, 'load_plugin_textdomain' ) );
 
+		$this->define_dependencies_notice_hooks();
 	}
 
 	/**
@@ -73,7 +75,12 @@ class Woo_Manage_Fraud_Orders {
 			define( $name, $value );
 		}
 	}
-
+	
+	public function define_dependencies_notice_hooks() {
+        $dependencies = new Dependencies();
+        add_action( 'plugins_loaded', array( $dependencies, 'init_wp_dependency_installer' ) );
+        add_filter( 'wp_dependency_dismiss_label', array( $dependencies, 'set_admin_notice_name' ), 10, 2 );
+    }
 
     /**
      * Check is WooCommerce active.
@@ -159,7 +166,7 @@ class Woo_Manage_Fraud_Orders {
 	 */
 	protected function define_order_metabox_hooks() {
 
-	    $order_metabox = new Order_MetaBox();
+		$order_metabox = new Order_MetaBox();
 
 		add_action( 'add_meta_boxes_shop_order', array( $order_metabox, 'add_meta_box' ), 99, 1 );
 		add_action( 'save_post', array( $order_metabox, 'save_order_meta_box_data' ), 99, 1 );
