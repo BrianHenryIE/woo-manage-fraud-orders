@@ -26,6 +26,7 @@ class Woo_Manage_Fraud_Orders {
 	 */
 	public function __construct() {
 
+		$this->define_admin_hooks();
 		$this->define_bulk_blacklist_hooks();
 		$this->define_settings_tabs_hooks();
 		$this->define_order_actions_hooks();
@@ -50,6 +51,13 @@ class Woo_Manage_Fraud_Orders {
 	protected function define( $name, $value ) {
 		if ( ! defined( $name ) ) {
 			define( $name, $value );
+	protected function define_admin_hooks() {
+
+		$plugin_admin = new Admin();
+
+		add_action( 'admin_enqueue_scripts', array( $plugin_admin, 'enqueue_styles' ) );
+	}
+
 		}
 	}
 
