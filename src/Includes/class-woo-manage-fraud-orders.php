@@ -9,8 +9,10 @@
 
 namespace PrasidhdaMalla\Woo_Manage_Fraud_Orders\Includes;
 
+use PrasidhdaMalla\Woo_Manage_Fraud_Orders\Admin\Admin;
 use PrasidhdaMalla\Woo_Manage_Fraud_Orders\Admin\Dependencies;
 use PrasidhdaMalla\Woo_Manage_Fraud_Orders\Admin\Plugins_Page;
+use PrasidhdaMalla\Woo_Manage_Fraud_Orders\API\Track_Fraud_Attempts;
 use PrasidhdaMalla\Woo_Manage_Fraud_Orders\WooCommerce\Bulk_Blacklist;
 use PrasidhdaMalla\Woo_Manage_Fraud_Orders\WooCommerce\Order_Actions;
 use PrasidhdaMalla\Woo_Manage_Fraud_Orders\WooCommerce\Order_MetaBox;
@@ -37,14 +39,16 @@ class Woo_Manage_Fraud_Orders {
 
 		$this->define_admin_hooks();
 		$this->define_dependencies_notice_hooks();
+		$this->define_plugins_page_hooks();
+
 		$this->define_bulk_blacklist_hooks();
+		$this->define_track_fraud_attempts_hooks();
+
 		$this->define_settings_tabs_hooks();
 		$this->define_order_actions_hooks();
 		$this->define_order_metabox_hooks();
-		$this->define_track_fraud_attempts_hooks();
+	}
 
-		$plugins_page = new Plugins_Page();
-		add_filter( 'plugin_action_links_' . plugin_basename( WMFO_PLUGIN_FILE ), array( $plugins_page, 'action_links' ), 99, 1 );
 	/**
 	 * Define the locale for this plugin for internationalization.
 	 *
@@ -59,7 +63,6 @@ class Woo_Manage_Fraud_Orders {
 
 		add_action( 'plugins_loaded', array( $i18n, 'load_plugin_textdomain' ) );
 
-		$this->define_dependencies_notice_hooks();
 	}
 
 	/**
@@ -74,14 +77,25 @@ class Woo_Manage_Fraud_Orders {
 		$this->define( 'WMFO_LOG_DIR', $upload_dir['basedir'] . '/wmfo-logs/' );
 	}
 
+	/**
 	 * Define a constant if it has not already been defined .
 	 *
 	 * @param string $name The name of the constant to define .
 	 * @param mixed  $value The value of the constant .
-	 * /
-	protected function define( $name, $value ) {
-		if ( ! defined( $name ) ) {
-			define( $name, $value );
+	 */
+	protected function define( $name, $value )
+    {
+        if (!defined($name)) {
+            define($name, $value);
+        }
+    }
+
+	/*
+	 * Register all of the hooks related to the admin area functionality
+	 * of the plugin.
+	 *
+	 * @since    1.0.0
+	 */
 	protected function define_admin_hooks() {
 
 		$plugin_admin = new Admin();
@@ -89,7 +103,17 @@ class Woo_Manage_Fraud_Orders {
 		add_action( 'admin_enqueue_scripts', array( $plugin_admin, 'enqueue_styles' ) );
 	}
 
+	protected function define_plugins_page_hooks() {
+
+		$plugins_page = new Plugins_Page();
+
+		if ( defined( 'WMFO_PLUGIN_FILE' ) ) {
+			$plugin_basename = plugin_basename( WMFO_PLUGIN_FILE );
+		} else {
+			$plugin_basename = 'woo-manage-fraud-orders/woo-manage-fraud-orders.php';
 		}
+
+		add_filter( 'plugin_action_links_' . $plugin_basename, array( $plugins_page, 'action_links' ), 99, 1 );
 	}
 
 	public function define_dependencies_notice_hooks() {
