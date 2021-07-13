@@ -34,6 +34,7 @@ class Woo_Manage_Fraud_Orders {
 	public function __construct() {
 
 		$this->define_admin_hooks();
+		$this->define_dependencies_notice_hooks();
 		$this->define_bulk_blacklist_hooks();
 		$this->define_settings_tabs_hooks();
 		$this->define_order_actions_hooks();
