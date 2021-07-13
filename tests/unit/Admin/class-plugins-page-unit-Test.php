@@ -9,7 +9,7 @@ namespace PrasidhdaMalla\Woo_Manage_Fraud_Orders\Admin;
 
 /**
  *
- * @coversDefaultClass \PrasidhdaMalla\Woo_Manage_Fraud_Orders\Admin\Plugins_Page
+ * @coversDefaultClass  \PrasidhdaMalla\Woo_Manage_Fraud_Orders\Admin\Plugins_Page
  */
 class Plugins_Page_Unit_Test extends \Codeception\Test\Unit {
 
@@ -28,7 +28,7 @@ class Plugins_Page_Unit_Test extends \Codeception\Test\Unit {
      */
     public function test_action_links() {
 
-        $sut = new \Plugins_Page();
+        $sut = new Plugins_Page();
 
         \WP_Mock::userFunction(
             'admin_url',
