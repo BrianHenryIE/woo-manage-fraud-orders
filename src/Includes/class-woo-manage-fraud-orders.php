@@ -84,7 +84,8 @@ if ( ! class_exists( 'Woo_Manage_Fraud_Orders' ) ) {
 		private function init_hooks() {
 			register_activation_hook( WMFO_PLUGIN_FILE, array( $this, 'install' ) );
 
-			add_filter( 'plugin_action_links_' . plugin_basename( WMFO_PLUGIN_FILE ), array( $this, 'action_links' ), 99, 1 );
+			$plugins_page = new Plugins_Page();
+			add_filter( 'plugin_action_links_' . plugin_basename( WMFO_PLUGIN_FILE ), array( $plugins_page, 'action_links' ), 99, 1 );
 			add_action( 'plugins_loaded', array( $this, 'load_text_domain' ) );
 		}
 
@@ -100,23 +101,6 @@ if ( ! class_exists( 'Woo_Manage_Fraud_Orders' ) ) {
 			}
 		}
 
-		/**
-		 * Add the `Settings` link under the plugin name on plugins.php.
-		 *
-		 * @hooked plugin_action_links_{plugin_basename}
-		 * @see WP_Plugins_List_Table::single_row()
-		 *
-		 * @param array<string, string> $actions The existing registered links.
-		 * @return array<string, string>
-		 */
-		public static function action_links( $actions ): array {
-
-			$new_actions = array(
-				'settings' => '<a href="' . admin_url( 'admin.php?page=wc-settings&tab=settings_tab_blacklists' ) . '">' . __( 'Settings', 'woo-manage-fraud-orders' ) . '</a>',
-			);
-
-			return array_merge( $new_actions, $actions );
-		}
 
 		/**
 		 * Load text domain for translation

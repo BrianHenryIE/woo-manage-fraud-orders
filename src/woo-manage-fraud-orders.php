@@ -26,5 +26,7 @@ if ( ! class_exists( 'Woo_Manage_Fraud_Orders' ) ) {
 	include_once dirname( __FILE__ ) . '/Includes/class-woo-manage-fraud-orders.php';
 }
 
+require_once __DIR__  . '/autoload.php';
+
 // Initialize the plugin.
 $GLOBALS['woo_manage_fraud_orders'] = Woo_Manage_Fraud_Orders::instance();
