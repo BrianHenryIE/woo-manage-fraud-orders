@@ -33,6 +33,8 @@ class Woo_Manage_Fraud_Orders {
 	 */
 	public function __construct() {
 
+		$this->set_locale();
+
 		$this->define_admin_hooks();
 		$this->define_dependencies_notice_hooks();
 		$this->define_bulk_blacklist_hooks();
@@ -43,8 +45,18 @@ class Woo_Manage_Fraud_Orders {
 
 		$plugins_page = new Plugins_Page();
 		add_filter( 'plugin_action_links_' . plugin_basename( WMFO_PLUGIN_FILE ), array( $plugins_page, 'action_links' ), 99, 1 );
+	/**
+	 * Define the locale for this plugin for internationalization.
+	 *
+	 * Uses the i18n class in order to set the domain and to register the hook
+	 * with WordPress.
+	 *
+	 * @since    1.0.0
+	 */
+	protected function set_locale() {
 
 		$i18n = new I18n();
+
 		add_action( 'plugins_loaded', array( $i18n, 'load_plugin_textdomain' ) );
 
 		$this->define_dependencies_notice_hooks();

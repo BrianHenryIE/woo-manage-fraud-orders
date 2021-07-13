@@ -12,6 +12,7 @@ namespace PrasidhdaMalla\Woo_Manage_Fraud_Orders\Includes;
  * Class I18n_Test
  *
  * @see I18n
+ * @coversDefaultClass \PrasidhdaMalla\Woo_Manage_Fraud_Orders\Includes\I18n
  */
 class I18n_WP_Unit_Test extends \Codeception\TestCase\WPTestCase {
 
