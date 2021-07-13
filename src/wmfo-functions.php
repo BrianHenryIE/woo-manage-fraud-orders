@@ -70,6 +70,7 @@ function wmfp_get_customers() {
 
 /**
  * get enabled gateways
+ *
  * @return mixed
  */
 function wmfp_get_enabled_payment_gateways() {

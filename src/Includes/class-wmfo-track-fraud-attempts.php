@@ -104,8 +104,8 @@ if ( ! class_exists( 'WMFO_Track_Fraud_Attempts' ) ) {
 			$last_name                     = $data['billing_last_name'] ?? '';
 			$customer_details['full_name'] = $first_name . ' ' . $last_name;
 
-			$customer_details['billing_email'] = $data['billing_email'] ?? '';
-			$customer_details['billing_phone'] = $data['billing_phone'] ?? '';
+			$customer_details['billing_email']  = $data['billing_email'] ?? '';
+			$customer_details['billing_phone']  = $data['billing_phone'] ?? '';
 			$customer_details['payment_method'] = $data['payment_method'] ?? '';
 
 			$customer_details['billing_address'] = array(
@@ -174,7 +174,7 @@ if ( ! class_exists( 'WMFO_Track_Fraud_Attempts' ) ) {
 		 * @param ?WC_Order                  $order The WooCommerce order.
 		 */
 		public static function manage_blacklisted_customers( $customer_details, $product_items, $order = null ) {
-			//White list check
+			// White list check
 			// If chosen payment gateway is on the whitelist, skip the blacklist check
 			if ( WMFO_Blacklist_Handler::is_whitelisted( $customer_details ) ) {
 
@@ -201,7 +201,7 @@ if ( ! class_exists( 'WMFO_Track_Fraud_Attempts' ) ) {
 			if ( WMFO_Blacklist_Handler::is_blacklisted( $customer_details ) ) {
 				if ( method_exists( 'WMFO_Blacklist_Handler', 'show_blocked_message' ) ) {
 					WMFO_Blacklist_Handler::show_blocked_message();
-					WMFO_Blacklist_Handler::add_to_log($customer_details);
+					WMFO_Blacklist_Handler::add_to_log( $customer_details );
 				}
 				return;
 			}
@@ -250,9 +250,9 @@ if ( ! class_exists( 'WMFO_Track_Fraud_Attempts' ) ) {
 
 					if ( in_array( $prev_order->post_status, $blacklists_order_status, true ) ) {
 						if ( method_exists( 'WMFO_Blacklist_Handler', 'show_blocked_message' ) ) {
-							$GLOBALS['first_caught_blacklisted_reason'] = __('Order Status', 'woo-manage-fraud-orders');
+							$GLOBALS['first_caught_blacklisted_reason'] = __( 'Order Status', 'woo-manage-fraud-orders' );
 							WMFO_Blacklist_Handler::show_blocked_message();
-							WMFO_Blacklist_Handler::add_to_log($customer_details);
+							WMFO_Blacklist_Handler::add_to_log( $customer_details );
 						}
 						break;
 					}
@@ -293,9 +293,9 @@ if ( ! class_exists( 'WMFO_Track_Fraud_Attempts' ) ) {
 		/**
 		 * Triggered when a payment with the gateway fails.
 		 *
-		 * @param WC_Order $order The order whose payment failed.
-		 * @param stdClass $_result The result from the API call.
-		 * @param string $_error The error message.
+		 * @param WC_Order        $order The order whose payment failed.
+		 * @param stdClass        $_result The result from the API call.
+		 * @param string          $_error The error message.
 		 * @param WC_Gateway_EWAY $_gateway The instance of the gateway.
 		 *
 		 * @throws Exception

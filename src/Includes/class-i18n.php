@@ -24,7 +24,7 @@ class I18n {
 		load_plugin_textdomain(
 			'woo-manage-fraud-orders',
 			false,
-            plugin_basename( dirname( __FILE__, 2 ) ) . '/languages/'
+			plugin_basename( dirname( __FILE__, 2 ) ) . '/languages/'
 		);
 	}
 

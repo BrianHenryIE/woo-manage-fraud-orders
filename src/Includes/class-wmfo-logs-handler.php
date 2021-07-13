@@ -11,7 +11,6 @@ class WMFO_Logs_Handler {
 	 * Function to add the log in table
 	 *
 	 * @param array $data
-	 *
 	 */
 	public function add_log( $data = array() ) {
 
@@ -27,7 +26,6 @@ class WMFO_Logs_Handler {
 	 * Delete a log record.
 	 *
 	 * @param int $id ID
-	 *
 	 */
 	public function delete_log( $id ) {
 		global $wpdb;

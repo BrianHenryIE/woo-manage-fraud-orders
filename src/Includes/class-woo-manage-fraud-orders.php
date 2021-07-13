@@ -21,7 +21,6 @@ use PrasidhdaMalla\Woo_Manage_Fraud_Orders\WooCommerce\Settings_Tab;
  */
 class Woo_Manage_Fraud_Orders {
 
-
 	/**
 	 * The current plugin version.
 	 *
@@ -33,7 +32,6 @@ class Woo_Manage_Fraud_Orders {
 	 * Instantiate the class.
 	 */
 	public function __construct() {
-		$this->define_constants();
 
 		$this->define_bulk_blacklist_hooks();
 		$this->define_settings_tabs_hooks();
@@ -41,10 +39,9 @@ class Woo_Manage_Fraud_Orders {
 		$this->define_order_metabox_hooks();
 		$this->define_track_fraud_attempts_hooks();
 
-		register_activation_hook( WMFO_PLUGIN_FILE, array( $this, 'install' ) );
-
 		$plugins_page = new Plugins_Page();
 		add_filter( 'plugin_action_links_' . plugin_basename( WMFO_PLUGIN_FILE ), array( $plugins_page, 'action_links' ), 99, 1 );
+
 		$i18n = new I18n();
 		add_action( 'plugins_loaded', array( $i18n, 'load_plugin_textdomain' ) );
 
@@ -63,71 +60,69 @@ class Woo_Manage_Fraud_Orders {
 		$this->define( 'WMFO_LOG_DIR', $upload_dir['basedir'] . '/wmfo-logs/' );
 	}
 
-
-	/**
-	 * Define a constant if it has not already been defined.
+	 * Define a constant if it has not already been defined .
 	 *
-	 * @param string $name The name of the constant to define.
-	 * @param mixed  $value The value of the constant.
-	 */
+	 * @param string $name The name of the constant to define .
+	 * @param mixed  $value The value of the constant .
+	 * /
 	protected function define( $name, $value ) {
 		if ( ! defined( $name ) ) {
 			define( $name, $value );
 		}
 	}
-	
+
 	public function define_dependencies_notice_hooks() {
-        $dependencies = new Dependencies();
-        add_action( 'plugins_loaded', array( $dependencies, 'init_wp_dependency_installer' ) );
-        add_filter( 'wp_dependency_dismiss_label', array( $dependencies, 'set_admin_notice_name' ), 10, 2 );
-    }
+		$dependencies = new Dependencies();
+		add_action( 'plugins_loaded', array( $dependencies, 'init_wp_dependency_installer' ) );
+		add_filter( 'wp_dependency_dismiss_label', array( $dependencies, 'set_admin_notice_name' ), 10, 2 );
+	}
 
-    /**
-     * Check is WooCommerce active.
-     * Create log dir
-     * Create log db table
-     */
-    public function install() {
+	/**
+	 * Check is WooCommerce active.
+	 * Create log dir
+	 * Create log db table
+	 */
+	public function install() {
 
-        if ( ! function_exists( 'is_plugin_active_for_network' ) ) {
-            require_once( ABSPATH . '/wp-admin/includes/plugin.php' );
-        }
+		if ( ! function_exists( 'is_plugin_active_for_network' ) ) {
+			require_once ABSPATH . '/wp-admin/includes/plugin.php';
+		}
 
-        // multisite
-        if ( is_multisite() ) {
-            // this plugin is network activated - Woo must be network activated
-            if ( is_plugin_active_for_network( plugin_basename(__FILE__) ) ) {
-                $need = ! is_plugin_active_for_network( 'woocommerce/woocommerce.php' );
-                // this plugin is locally activated - Woo can be network or locally activated
-            } else {
-                $need = ! is_plugin_active( 'woocommerce/woocommerce.php' );
-            }
-            // this plugin runs on a single site
-        } else {
-            $need =  ! is_plugin_active( 'woocommerce/woocommerce.php');
-        }
+		// multisite
+		if ( is_multisite() ) {
+			// this plugin is network activated - Woo must be network activated
+			if ( is_plugin_active_for_network( plugin_basename( __FILE__ ) ) ) {
+				$need = ! is_plugin_active_for_network( 'woocommerce/woocommerce.php' );
+				// this plugin is locally activated - Woo can be network or locally activated
+			} else {
+				$need = ! is_plugin_active( 'woocommerce/woocommerce.php' );
+			}
+			// this plugin runs on a single site
+		} else {
+			$need = ! is_plugin_active( 'woocommerce/woocommerce.php' );
+		}
 
-        if ( $need ) {
+		if ( $need ) {
 
-            echo sprintf( esc_html__( 'Woo Manage Fraud Orders depends on %s to work!', 'woo-manage-fraud-orders' ), '<a href="https://wordpress.org/plugins/woocommerce/" target="_blank">' . esc_html__( 'WooCommerce', 'woo-manage-fraud-orders' ) . '</a>' );
-            @trigger_error( '', E_USER_ERROR );
-        }
+			echo sprintf( esc_html__( 'Woo Manage Fraud Orders depends on %s to work!', 'woo-manage-fraud-orders' ), '<a href="https://wordpress.org/plugins/woocommerce/" target="_blank">' . esc_html__( 'WooCommerce', 'woo-manage-fraud-orders' ) . '</a>' );
+			@trigger_error( '', E_USER_ERROR );
+		}
 
-        $this->may_be_create_log_dir_db_table();
+		$this->may_be_create_log_dir_db_table();
 
-    }
+	}
 
-    /**
-     * Function to handle the creation of debug folder and DB table
-     */
-    public function may_be_create_log_dir_db_table(){
-        require_once plugin_dir_path(WMFO_PLUGIN_FILE) . 'includes/class-wmfo-activator.php';
+	/**
+	 * Function to handle the creation of debug folder and DB table
+	 */
+	public function may_be_create_log_dir_db_table() {
+		require_once plugin_dir_path( WMFO_PLUGIN_FILE ) . 'includes/class-wmfo-activator.php';
 
-        WMFO_Activator::create_db_table();
+		WMFO_Activator::create_db_table();
 
-        WMFO_Activator::create_upload_dir();
+		WMFO_Activator::create_upload_dir();
 
-    }
+	}
 
 
 	protected function define_bulk_blacklist_hooks() {
@@ -172,36 +167,43 @@ class Woo_Manage_Fraud_Orders {
 		add_action( 'save_post', array( $order_metabox, 'save_order_meta_box_data' ), 99, 1 );
 	}
 
-	public function define_track_fraud_attempts_hooks(){
+	public function define_track_fraud_attempts_hooks() {
 
-        $track_fraud_attempts = new Track_Fraud_Attempts();
+		$track_fraud_attempts = new Track_Fraud_Attempts();
 
-        add_action('woocommerce_after_checkout_validation', array($track_fraud_attempts, 'manage_blacklisted_customers_checkout'), 10, 2);
-        add_action('woocommerce_before_pay_action', array($track_fraud_attempts, 'manage_blacklisted_customers_order_pay'), 99, 1);
-        add_action('woocommerce_after_pay_action', array($track_fraud_attempts, 'manage_multiple_failed_attempts_order_pay'), 99, 1);
-        // Not part of WooCommerce core.
-        add_action('woocommerce_api_wc_gateway_eway_payment_failed', array($track_fraud_attempts, 'manage_multiple_failed_attempts_eway'), 100, 4);
-        add_action('woocommerce_checkout_order_processed', array($track_fraud_attempts, 'manage_multiple_failed_attempts_checkout'), 100, 3);
-    }
+		add_action( 'woocommerce_after_checkout_validation', array( $track_fraud_attempts, 'manage_blacklisted_customers_checkout' ), 10, 2 );
+		add_action( 'woocommerce_before_pay_action', array( $track_fraud_attempts, 'manage_blacklisted_customers_order_pay' ), 99, 1 );
+		add_action( 'woocommerce_after_pay_action', array( $track_fraud_attempts, 'manage_multiple_failed_attempts_order_pay' ), 99, 1 );
+		// Not part of WooCommerce core.
+		add_action( 'woocommerce_api_wc_gateway_eway_payment_failed', array( $track_fraud_attempts, 'manage_multiple_failed_attempts_eway' ), 100, 4 );
+		add_action( 'woocommerce_checkout_order_processed', array( $track_fraud_attempts, 'manage_multiple_failed_attempts_checkout' ), 100, 3 );
+	}
 
-    public function init_sub_menu(){
-        add_submenu_page( 'woocommerce', __( 'WMFO Logs', 'woo-manage-fraud-orders' ), __( 'WMFO Logs', 'woo-manage-fraud-orders' ),
-            'manage_options', 'wmfo-logs', array( $this, 'render_logs' ), 99999 );
-    }
+	public function init_sub_menu() {
+		add_submenu_page(
+			'woocommerce',
+			__( 'WMFO Logs', 'woo-manage-fraud-orders' ),
+			__( 'WMFO Logs', 'woo-manage-fraud-orders' ),
+			'manage_options',
+			'wmfo-logs',
+			array( $this, 'render_logs' ),
+			99999
+		);
+	}
 
-    public function render_logs() {
-        require_once plugin_dir_path(WMFO_PLUGIN_FILE) . 'includes/admin/class-wmfo-logs-table.php';
-        $logs = new WMFO_Logs_Table();
-        $logs->prepare_items();
-        ?>
-        <div class="wrap">
-            <form method="post">
-                <h2><?php _e( 'Logs of Blacklisted attempts.', 'woo-manage-fraud-orders' ) ?></h2>
-                <p><?php _e('This is not the blacklisted customer details. Rather,  It is the list of customers who could not manage to place order due to blacklisting.', 'woo-manage-fraud-orders'); ?></p>
-                <?php $logs->display(); ?>
-            </form>
-        </div>
-        <?php
-    }
+	public function render_logs() {
+		require_once plugin_dir_path( WMFO_PLUGIN_FILE ) . 'includes/admin/class-wmfo-logs-table.php';
+		$logs = new WMFO_Logs_Table();
+		$logs->prepare_items();
+		?>
+		<div class="wrap">
+			<form method="post">
+				<h2><?php _e( 'Logs of Blacklisted attempts.', 'woo-manage-fraud-orders' ); ?></h2>
+				<p><?php _e( 'This is not the blacklisted customer details. Rather,  It is the list of customers who could not manage to place order due to blacklisting.', 'woo-manage-fraud-orders' ); ?></p>
+				<?php $logs->display(); ?>
+			</form>
+		</div>
+		<?php
+	}
 
 }

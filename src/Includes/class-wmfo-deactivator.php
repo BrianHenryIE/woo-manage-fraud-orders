@@ -2,7 +2,6 @@
 
 /**
  * Fired during plugin deactivation.
- *
  */
 class WMFO_Deactivator {
 

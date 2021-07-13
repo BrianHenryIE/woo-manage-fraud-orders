@@ -1,5 +1,7 @@
 <?php
 /**
+ * Show an admin notice when WooCommerce is not active.
+ *
  * Configuration for WP Dependency Installer.
  *
  * @see https://github.com/afragen/wp-dependency-installer/wiki/Configuration
@@ -9,10 +11,17 @@
 
 namespace PrasidhdaMalla\Woo_Manage_Fraud_Orders\Admin;
 
+/**
+ * Class Dependencies
+ *
+ * @package PrasidhdaMalla\Woo_Manage_Fraud_Orders\Admin
+ */
 class Dependencies {
 
 	/**
-	 * @var array<array>
+	 * The settings for WP_Dependency_Installer.
+	 *
+	 * @var array<array<string,string|bool>
 	 */
 	protected static $plugins = array(
 		array(
@@ -27,7 +36,7 @@ class Dependencies {
 	/**
 	 * @hooked plugins_loaded
 	 */
-	public function init_wp_dependency_installer(): void {
+	public function init_wp_dependency_installer() {
 
 		\PM_Woo_Manage_Fraud_Orders_WP_Dependency_Installer::instance( __DIR__ )
 			->register( self::$plugins )
@@ -45,7 +54,8 @@ class Dependencies {
 	 * @return string
 	 */
 	public function set_admin_notice_name( $label, $source ): string {
-		$label = basename( __DIR__ ) !== $source ? $label : 'Woo Manage Fraud Orders';
+		$plugin_name = 'Woo Manage Fraud Orders';
+		$label       = basename( __DIR__ ) !== $source ? $label : $plugin_name;
 		return $label;
 	}
 

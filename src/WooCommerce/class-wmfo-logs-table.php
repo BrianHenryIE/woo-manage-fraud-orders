@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // WP_List_Table is not loaded automatically so we need to load it in our application
 if ( ! class_exists( 'WP_List_Table' ) ) {
-	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
+	require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
 }
 
 
@@ -43,7 +43,6 @@ class WMFO_Logs_Table extends WP_List_Table {
 		$hidden   = $this->get_hidden_columns();
 		$sortable = $this->get_sortable_columns();
 
-
 		$sql = "SELECT * FROM {$wpdb->prefix}{$this->table} ORDER BY id desc";
 
 		$data = $wpdb->get_results( $sql, 'ARRAY_A' );
@@ -52,10 +51,12 @@ class WMFO_Logs_Table extends WP_List_Table {
 		$currentPage = $this->get_pagenum();
 		$totalItems  = count( $data );
 
-		$this->set_pagination_args( array(
-			'total_items' => $totalItems,
-			'per_page'    => $perPage
-		) );
+		$this->set_pagination_args(
+			array(
+				'total_items' => $totalItems,
+				'per_page'    => $perPage,
+			)
+		);
 
 		$data = array_slice( $data, ( ( $currentPage - 1 ) * $perPage ), $perPage );
 
@@ -89,7 +90,8 @@ class WMFO_Logs_Table extends WP_List_Table {
 	function column_cb( $item ) {
 		if ( $this->record_count() ) {
 			return sprintf(
-				'<input type="checkbox" name="bulk-delete[]" value="%s" />', $item['id']
+				'<input type="checkbox" name="bulk-delete[]" value="%s" />',
+				$item['id']
 			);
 		}
 
@@ -119,7 +121,7 @@ class WMFO_Logs_Table extends WP_List_Table {
 	 */
 	function get_bulk_actions() {
 		$actions = array(
-			'bulk-delete' => __( 'Delete', 'woo-manage-fraud-orders' )
+			'bulk-delete' => __( 'Delete', 'woo-manage-fraud-orders' ),
 		);
 
 		return $actions;
@@ -139,7 +141,7 @@ class WMFO_Logs_Table extends WP_List_Table {
 
 		// If the delete bulk action is triggered
 		if ( ( isset( $_POST['action'] ) && $_POST['action'] == 'bulk-delete' )
-		     || ( isset( $_POST['action2'] ) && $_POST['action2'] == 'bulk-delete' )
+			 || ( isset( $_POST['action2'] ) && $_POST['action2'] == 'bulk-delete' )
 		) {
 
 			$delete_ids = esc_sql( $_POST['bulk-delete'] );
@@ -183,18 +185,17 @@ class WMFO_Logs_Table extends WP_List_Table {
 		}
 
 		$columns = array(
-			'full_name'         => __( 'Full Name', 'woo-manage-fraud-orders' ),
-			'phone' => __( 'Phone', 'woo-manage-fraud-orders' ),
-			'ip'      => __( 'IP', 'woo-manage-fraud-orders' ),
-			'email'    => __( 'Email', 'woo-manage-fraud-orders' ),
-			'billing_address'        => __( 'Billing Address', 'woo-manage-fraud-orders' ),
-			'shipping_address'              => __( 'Shipping Address', 'woo-manage-fraud-orders' ),
-			'blacklisted_reason'              => __( 'Blacklisted Reason', 'woo-manage-fraud-orders' ),
-			'timestamp'         => __( 'Date', 'woo-manage-fraud-orders' ),
+			'full_name'          => __( 'Full Name', 'woo-manage-fraud-orders' ),
+			'phone'              => __( 'Phone', 'woo-manage-fraud-orders' ),
+			'ip'                 => __( 'IP', 'woo-manage-fraud-orders' ),
+			'email'              => __( 'Email', 'woo-manage-fraud-orders' ),
+			'billing_address'    => __( 'Billing Address', 'woo-manage-fraud-orders' ),
+			'shipping_address'   => __( 'Shipping Address', 'woo-manage-fraud-orders' ),
+			'blacklisted_reason' => __( 'Blacklisted Reason', 'woo-manage-fraud-orders' ),
+			'timestamp'          => __( 'Date', 'woo-manage-fraud-orders' ),
 		);
 
 		$columns = array_merge( $cb, $columns );
-
 
 		return $columns;
 	}
@@ -214,7 +215,7 @@ class WMFO_Logs_Table extends WP_List_Table {
 	/**
 	 * Define what data to show on each column of the table
 	 *
-	 * @param Array $item Data
+	 * @param Array  $item Data
 	 * @param String $column_name - Current column name
 	 *
 	 * @return Mixed

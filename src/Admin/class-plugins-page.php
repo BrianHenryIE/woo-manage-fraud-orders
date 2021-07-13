@@ -18,8 +18,8 @@ class Plugins_Page {
 	 * @hooked plugin_action_links_{plugin_basename}
 	 * @see WP_Plugins_List_Table::single_row()
 	 *
-	 * @param array<string, string> $actions The existing registered links.
-	 * @return array<string, string>
+	 * @param array<string|int, string> $actions The existing registered links.
+	 * @return array<string|int, string>
 	 */
 	public static function action_links( $actions ): array {
 
