@@ -139,10 +139,10 @@ if ( ! class_exists( 'Woo_Manage_Fraud_Orders' ) ) {
 			require_once WMFO_ABSPATH . 'Includes/class-wmfo-blacklist-handler.php';
 			require_once WMFO_ABSPATH . 'Includes/class-wmfo-track-fraud-attempts.php';
 			// if ( is_admin() ) {
-				require_once WMFO_ABSPATH . 'Admin/class-wmfo-settings-tab.php';
-				require_once WMFO_ABSPATH . 'Admin/class-wmfo-order-metabox.php';
-				require_once WMFO_ABSPATH . 'Admin/class-wmfo-order-actions.php';
-				require_once WMFO_ABSPATH . 'Admin/class-wmfo-bulk-blacklist.php';
+				require_once WMFO_ABSPATH . 'WooCommerce/class-wmfo-settings-tab.php';
+				require_once WMFO_ABSPATH . 'WooCommerce/class-wmfo-order-metabox.php';
+				require_once WMFO_ABSPATH . 'WooCommerce/class-wmfo-order-actions.php';
+				require_once WMFO_ABSPATH . 'WooCommerce/class-wmfo-bulk-blacklist.php';
 			// }
 		}
 
