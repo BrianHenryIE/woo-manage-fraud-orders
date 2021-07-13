@@ -8,6 +8,8 @@
  * @package woo-manage-fraud-orders
  */
 
+namespace PrasidhdaMalla\Woo_Manage_Fraud_Orders\Includes;
+
 /**
  * Class I18n
  */
