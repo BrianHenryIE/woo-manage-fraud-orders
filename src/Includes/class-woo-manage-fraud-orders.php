@@ -173,17 +173,18 @@ if ( ! class_exists( 'Woo_Manage_Fraud_Orders' ) ) {
 		 * Include required files.
 		 */
 		public function includes() {
-			require_once WMFO_ABSPATH . 'includes/wmfo-functions.php';
-			require_once WMFO_ABSPATH . 'includes/class-wmfo-blacklist-handler.php';
-			require_once WMFO_ABSPATH . 'includes/class-wmfo-debug-log.php';
-			require_once WMFO_ABSPATH . 'includes/class-wmfo-track-fraud-attempts.php';
-			require_once WMFO_ABSPATH . 'includes/class-wmfo-logs-handler.php';
-			if ( is_admin() ) {
-				require_once WMFO_ABSPATH . 'includes/admin/class-wmfo-settings-tab.php';
-				require_once WMFO_ABSPATH . 'includes/admin/class-wmfo-order-metabox.php';
-				require_once WMFO_ABSPATH . 'includes/admin/class-wmfo-order-actions.php';
-				require_once WMFO_ABSPATH . 'includes/admin/class-wmfo-bulk-blacklist.php';
-			}
+			require_once WMFO_ABSPATH . 'Includes/class-wmfo-debug-log.php';
+			require_once WMFO_ABSPATH . 'Includes/class-wmfo-track-fraud-attempts.php';
+			require_once WMFO_ABSPATH . 'Includes/class-wmfo-logs-handler.php';
+			require_once WMFO_ABSPATH . 'Includes/wmfo-functions.php';
+			require_once WMFO_ABSPATH . 'Includes/class-wmfo-blacklist-handler.php';
+			require_once WMFO_ABSPATH . 'Includes/class-wmfo-track-fraud-attempts.php';
+			// if ( is_admin() ) {
+				require_once WMFO_ABSPATH . 'Admin/class-wmfo-settings-tab.php';
+				require_once WMFO_ABSPATH . 'Admin/class-wmfo-order-metabox.php';
+				require_once WMFO_ABSPATH . 'Admin/class-wmfo-order-actions.php';
+				require_once WMFO_ABSPATH . 'Admin/class-wmfo-bulk-blacklist.php';
+			// }
 		}
 
 		public function init_sub_menu(){
