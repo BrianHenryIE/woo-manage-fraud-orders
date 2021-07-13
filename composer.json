@@ -46,6 +46,7 @@
         }
     ],
     "require": {
+        "afragen/wp-dependency-installer": "^3.1",
         "php": ">=7.0",
         "pablo-sg-pacheco/wp-namespace-autoloader": "*"
     },
@@ -91,7 +92,12 @@
         "strauss": {
             "namespace_prefix": "PrasidhdaMalla\\Woo_Manage_Fraud_Orders\\",
             "target_directory": "/src/strauss/",
-            "classmap_prefix": "PM_Woo_Manage_Fraud_Orders_"
+            "classmap_prefix": "PM_Woo_Manage_Fraud_Orders_",
+            "override_autoload": {
+                "collizo4sky/persist-admin-notices-dismissal": {
+                    "files": ["dismiss-notice.js","persist-admin-notices-dismissal.php"]
+                }
+            }
         },
         "symlinks": {
             "wp-content": "wordpress/wp-content",
