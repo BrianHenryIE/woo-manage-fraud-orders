@@ -38,7 +38,7 @@ class Dependencies {
 	 */
 	public function init_wp_dependency_installer() {
 
-		\PM_Woo_Manage_Fraud_Orders_WP_Dependency_Installer::instance( __DIR__ )
+		\PM_Woo_Manage_Fraud_Orders_WP_Dependency_Installer::instance( 'woo-manage-fraud-orders' )
 			->register( self::$plugins )
 			->run();
 	}
@@ -54,8 +54,9 @@ class Dependencies {
 	 * @return string
 	 */
 	public function set_admin_notice_name( $label, $source ): string {
+
 		$plugin_name = 'Woo Manage Fraud Orders';
-		$label       = basename( __DIR__ ) !== $source ? $label : $plugin_name;
+		$label       = 'woo-manage-fraud-orders' !== $source ? $label : $plugin_name;
 		return $label;
 	}
 
