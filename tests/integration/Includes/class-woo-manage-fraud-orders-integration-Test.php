@@ -9,6 +9,7 @@
 namespace PrasidhdaMalla\Woo_Manage_Fraud_Orders\Includes;
 
 use PrasidhdaMalla\Woo_Manage_Fraud_Orders\Admin\Plugins_Page;
+use PrasidhdaMalla\Woo_Manage_Fraud_Orders\API\Track_Fraud_Attempts;
 use PrasidhdaMalla\Woo_Manage_Fraud_Orders\WooCommerce\Bulk_Blacklist;
 use PrasidhdaMalla\Woo_Manage_Fraud_Orders\WooCommerce\Order_Actions;
 use PrasidhdaMalla\Woo_Manage_Fraud_Orders\WooCommerce\Order_MetaBox;
@@ -16,6 +17,7 @@ use PrasidhdaMalla\Woo_Manage_Fraud_Orders\WooCommerce\Settings_Tab;
 
 /**
  * Class Develop_Test
+ * @coversNothing
  */
 class Woo_Manage_Fraud_Orders_Integration_Test extends \Codeception\TestCase\WPTestCase {
 
