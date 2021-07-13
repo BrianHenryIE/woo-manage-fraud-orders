@@ -12,8 +12,6 @@ use PrasidhdaMalla\Woo_Manage_Fraud_Orders\Includes\Woo_Manage_Fraud_Orders;
 
 /**
  * Class Plugin_WP_Mock_Test
- *
- * @coversNothing
  */
 class Plugin_Unit_Test extends \Codeception\Test\Unit {
 
@@ -32,7 +30,13 @@ class Plugin_Unit_Test extends \Codeception\Test\Unit {
 	 */
 	public function test_plugin_include() {
 
-		$plugin_root_dir = dirname( __DIR__, 2 ) . '/src';
+        // Prevents code-coverage counting, and removes the need to define the WordPress functions that are used in that class.
+        \Patchwork\redefine(
+            array( Woo_Manage_Fraud_Orders::class, '__construct' ),
+            function() {}
+        );
+
+        $plugin_root_dir = dirname( __DIR__, 2 ) . '/src';
 
 		\WP_Mock::userFunction(
 			'plugin_dir_path',
@@ -58,11 +62,16 @@ class Plugin_Unit_Test extends \Codeception\Test\Unit {
 
 	}
 
-
 	/**
 	 * Verifies the plugin does not output anything to screen.
 	 */
 	public function test_plugin_include_no_output() {
+
+	    // Prevents code-coverage counting, and removes the need to define the WordPress functions that are used in that class.
+        \Patchwork\redefine(
+            array( Woo_Manage_Fraud_Orders::class, '__construct' ),
+            function() {}
+        );
 
 		$plugin_root_dir = dirname( __DIR__, 2 ) . '/src';
 
