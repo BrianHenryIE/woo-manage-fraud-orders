@@ -81,7 +81,7 @@ class Blacklist_Handler {
 	 * @see wmfo_get_customer_details_of_order()
 	 *
 	 * @param array<string,string>|false $customer Customer details (optional if an order is provided).
-	 * @param ?\WC_Order                  $order A WooCommerce order (option if customer details are provided).
+	 * @param ?\WC_Order                 $order A WooCommerce order (option if customer details are provided).
 	 * @param string                     $action "add"|"remove".
 	 * @param string                     $context "front"|"order-pay-eway".
 	 *
@@ -107,7 +107,7 @@ class Blacklist_Handler {
 			self::cancel_order( $order, $action );
 
 			if ( 'front' === $context ) {
-				throw new Exception( $wmfo_black_list_message );
+				throw new \Exception( $wmfo_black_list_message );
 			}
 
 			if ( in_array( $context, array( 'order-pay', 'order-pay-eway' ), true ) ) {
@@ -122,7 +122,7 @@ class Blacklist_Handler {
 					wp_safe_redirect( $order->get_checkout_payment_url( false ) );
 					exit();
 				} else {
-					throw new Exception();
+					throw new \Exception();
 				}
 			}
 		}
@@ -136,7 +136,7 @@ class Blacklist_Handler {
 	 * When $action=='remove' it adds a note saying the details are no longer blacklisted.
 	 *
 	 * @param \WC_Order $order   The WooCommerce order.
-	 * @param string   $action  "add"|"remove".
+	 * @param string    $action  "add"|"remove".
 	 *
 	 * @return bool Always returns true.
 	 */

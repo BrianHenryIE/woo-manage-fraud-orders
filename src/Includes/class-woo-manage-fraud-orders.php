@@ -21,19 +21,10 @@ use PrasidhdaMalla\Woo_Manage_Fraud_Orders\WooCommerce\Settings_Tab;
  */
 class Woo_Manage_Fraud_Orders {
 
-
-	/**
-	 * The current plugin version.
-	 *
-	 * @var string $version
-	 */
-	protected $version = '2.0.2';
-
 	/**
 	 * Instantiate the class.
 	 */
 	public function __construct() {
-		$this->define_constants();
 
 		$this->define_bulk_blacklist_hooks();
 		$this->define_settings_tabs_hooks();
@@ -41,26 +32,13 @@ class Woo_Manage_Fraud_Orders {
 		$this->define_order_metabox_hooks();
 		$this->define_track_fraud_attempts_hooks();
 
-		register_activation_hook( WMFO_PLUGIN_FILE, array( $this, 'install' ) );
-
 		$plugins_page = new Plugins_Page();
 		add_filter( 'plugin_action_links_' . plugin_basename( WMFO_PLUGIN_FILE ), array( $plugins_page, 'action_links' ), 99, 1 );
+
 		$i18n = new I18n();
 		add_action( 'plugins_loaded', array( $i18n, 'load_plugin_textdomain' ) );
 
 		$this->define_dependencies_notice_hooks();
-	}
-
-	/**
-	 * Define constants
-	 */
-	protected function define_constants() {
-		$upload_dir = wp_upload_dir( null, false );
-
-		$this->define( 'WMFO_ABSPATH', dirname( WMFO_PLUGIN_FILE ) . '/' );
-		$this->define( 'WMFO_PLUGIN_BASENAME', plugin_basename( WMFO_PLUGIN_FILE ) );
-		$this->define( 'WMFO_VERSION', $this->version );
-		$this->define( 'WMFO_LOG_DIR', $upload_dir['basedir'] . '/wmfo-logs/' );
 	}
 
 	/**
@@ -74,7 +52,7 @@ class Woo_Manage_Fraud_Orders {
 			define( $name, $value );
 		}
 	}
-	
+
 	public function define_dependencies_notice_hooks() {
 		$dependencies = new Dependencies();
 

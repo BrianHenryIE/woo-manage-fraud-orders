@@ -26,7 +26,7 @@ class Track_Fraud_Attempts {
 	 * @see WC_Checkout::get_posted_data()
 	 *
 	 * @param array<string, mixed> $data An array of posted data.
-	 * @param \WP_Error             $errors A WP Error object to add errors to.
+	 * @param \WP_Error            $errors A WP Error object to add errors to.
 	 */
 	public static function manage_blacklisted_customers_checkout( $data, $errors ) {
 		// Check if there are any other errors first.
@@ -115,7 +115,7 @@ class Track_Fraud_Attempts {
 	 *
 	 * @param array<string,string> $customer_details The customer details that might be blacklisted.
 	 * @param int[]                $product_items The product ids in the order.
-	 * @param ?\WC_Order            $order The WooCommerce order.
+	 * @param ?\WC_Order           $order The WooCommerce order.
 	 */
 	public static function manage_blacklisted_customers( $customer_details, $product_items, $order = null ) {
 		// As very first step, check if there is skipping set for order pay.
@@ -218,7 +218,7 @@ class Track_Fraud_Attempts {
 	 *
 	 * @param int                  $_order_id The order id.
 	 * @param array<string, mixed> $_posted_data The checkout data.
-	 * @param \WC_Order             $order The WooCommerce order.
+	 * @param \WC_Order            $order The WooCommerce order.
 	 *
 	 * @throws \Exception
 	 */
@@ -244,7 +244,7 @@ class Track_Fraud_Attempts {
 	 *
 	 * @param \WC_Order        $order The order whose payment failed.
 	 * @param \stdClass        $_result The result from the API call.
-	 * @param string          $_error The error message.
+	 * @param string           $_error The error message.
 	 * @param \WC_Gateway_EWAY $_gateway The instance of the gateway.
 	 */
 	public static function manage_multiple_failed_attempts_eway( $order, $_result, $_error, $_gateway ) {
@@ -259,7 +259,7 @@ class Track_Fraud_Attempts {
 	 * couldn't authorize the payment. Typical example will be Electronic check, CC processing.
 	 *
 	 * @param \WC_Order $order The WooCommerce order object.
-	 * @param string   $context "front"|"order-pay"|"order-pay-eway".
+	 * @param string    $context "front"|"order-pay"|"order-pay-eway".
 	 *
 	 * @throws \Exception
 	 */
