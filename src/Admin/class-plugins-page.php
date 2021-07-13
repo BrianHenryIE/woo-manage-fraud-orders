@@ -5,6 +5,8 @@
  * @package woo-manage-fraud-orders
  */
 
+namespace PrasidhdaMalla\Woo_Manage_Fraud_Orders\Admin;
+
 /**
  * Class Plugins_Page
  */

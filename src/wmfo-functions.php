@@ -6,16 +6,18 @@
  * @package woo-manage-fraud-orders
  */
 
+namespace PrasidhdaMalla\Woo_Manage_Fraud_Orders;
+
 /**
  * Function to get the customer details
  * Billing Phone, Email and IP address
  *
- * @param WC_Order $order The WooCommerce order object.
+ * @param \WC_Order $order The WooCommerce order object.
  *
  * @return array<string,string>|false
  */
 function wmfo_get_customer_details_of_order( $order ) {
-	if ( ! ( $order instanceof WC_Order ) ) {
+	if ( ! ( $order instanceof \WC_Order ) ) {
 		return false;
 	}
 

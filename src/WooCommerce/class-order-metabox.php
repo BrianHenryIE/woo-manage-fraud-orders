@@ -6,23 +6,12 @@
  * @package woo-manage-fraud-orders
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit();
-}
+namespace PrasidhdaMalla\Woo_Manage_Fraud_Orders\WooCommerce;
 
 /**
  * Class WMFO_Order_MetaBox
  */
-class WMFO_Order_MetaBox {
-
-	/**
-	 * WMFO_Order_MetaBox constructor.
-	 */
-	public function __construct() {
-		// Meta-box to order edit page.
-		add_action( 'add_meta_boxes_shop_order', array( $this, 'add_meta_box' ), 99, 1 );
-		add_action( 'save_post', array( $this, 'save_order_meta_box_data' ), 99, 1 );
-	}
+class Order_MetaBox {
 
 	/**
 	 * When an order's status is pending, register a metabox with the option:
@@ -31,12 +20,12 @@ class WMFO_Order_MetaBox {
 	 * @hooked add_meta_boxes_shop_order
 	 * @see register_and_do_post_meta_boxes()
 	 *
-	 * @param WP_Post $post The post object currently being edited.
+	 * @param \WP_Post $post The post object currently being edited.
 	 */
 	public function add_meta_box( $post ) {
 		$order = wc_get_order( $post->ID );
 
-		if ( ! ( $order instanceof WC_Order ) ) {
+		if ( ! ( $order instanceof \WC_Order ) ) {
 			return;
 		}
 
@@ -57,7 +46,7 @@ class WMFO_Order_MetaBox {
 	 * Output the HTML for the metabox. A checkbox:
 	 * "Check this to bypass this order payment from blacklisting".
 	 *
-	 * @param WP_Post $post The post object currently being edited.
+	 * @param \WP_Post $post The post object currently being edited.
 	 */
 	public function print_actions_meta_box( $post ) {
 		// Add a nonce field so we can check for it later.
@@ -131,5 +120,3 @@ class WMFO_Order_MetaBox {
 		update_post_meta( $post_id, 'wmfo_skip_blacklist', $wmfo_skip_blacklist );
 	}
 }
-
-new WMFO_Order_MetaBox();
