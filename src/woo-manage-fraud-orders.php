@@ -23,8 +23,8 @@ if ( ! defined( 'WMFO_PLUGIN_FILE' ) ) {
 }
 
 if ( ! class_exists( 'Woo_Manage_Fraud_Orders' ) ) {
-	include_once dirname( __FILE__ ) . '/includes/class-woo-manage-fraud-orders.php';
+	include_once dirname( __FILE__ ) . '/Includes/class-woo-manage-fraud-orders.php';
 }
 
 // Initialize the plugin.
-Woo_Manage_Fraud_Orders::instance();
+$GLOBALS['woo_manage_fraud_orders'] = Woo_Manage_Fraud_Orders::instance();
