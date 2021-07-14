@@ -14,7 +14,7 @@ use function PrasidhdaMalla\Woo_Manage_Fraud_Orders\wmfo_get_customer_details_of
 use function PrasidhdaMalla\Woo_Manage_Fraud_Orders\wmfo_get_ip_address;
 
 /**
- * Class WMFO_Track_Fraud_Attempts
+ * Class Track_Fraud_Attempts
  */
 class Track_Fraud_Attempts {
 

@@ -11,7 +11,7 @@ use PrasidhdaMalla\Woo_Manage_Fraud_Orders\Includes\Blacklist_Handler;
 use function PrasidhdaMalla\Woo_Manage_Fraud_Orders\wmfo_get_customer_details_of_order;
 
 /**
- * Class WMFO_Bulk_Blacklist
+ * Class Bulk_Blacklist
  */
 class Bulk_Blacklist {
 

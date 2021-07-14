@@ -8,7 +8,7 @@
 namespace PrasidhdaMalla\Woo_Manage_Fraud_Orders\WooCommerce;
 
 /**
- * Class WMFO_Settings_Tab
+ * Class Settings_Tab
  */
 class Settings_Tab {
 

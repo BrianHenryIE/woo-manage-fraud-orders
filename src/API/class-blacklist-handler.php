@@ -9,7 +9,7 @@
 namespace PrasidhdaMalla\Woo_Manage_Fraud_Orders\API;
 
 /**
- * Class WMFO_Blacklist_Handler
+ * Class Blacklist_Handler
  */
 class Blacklist_Handler {
 
