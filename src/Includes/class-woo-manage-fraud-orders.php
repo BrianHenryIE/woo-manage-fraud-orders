@@ -2,7 +2,7 @@
 /**
  * Main class
  * Handles everything from here, includes the file for the backend settings and
- * blacklisting funcitonalities, inlcudes the frontend handlers as well.
+ * blacklisting functionalities, includes the frontend handlers as well.
  *
  * @package woo-manage-fraud-orders
  */
@@ -41,9 +41,9 @@ class Woo_Manage_Fraud_Orders {
 		$this->define_dependencies_notice_hooks();
 		$this->define_plugins_page_hooks();
 
-		$this->define_bulk_blacklist_hooks();
 		$this->define_track_fraud_attempts_hooks();
 
+		$this->define_bulk_blacklist_hooks();
 		$this->define_settings_tabs_hooks();
 		$this->define_order_actions_hooks();
 		$this->define_order_metabox_hooks();
@@ -62,7 +62,6 @@ class Woo_Manage_Fraud_Orders {
 		$i18n = new I18n();
 
 		add_action( 'plugins_loaded', array( $i18n, 'load_plugin_textdomain' ) );
-
 	}
 
 	/**
@@ -177,7 +176,6 @@ class Woo_Manage_Fraud_Orders {
 		add_filter( 'bulk_actions-edit-shop_order', array( $bulk_blacklist, 'register_bulk_action' ), 99, 1 );
 		add_filter( 'handle_bulk_actions-edit-shop_order', array( $bulk_blacklist, 'handle_bulk_blacklisting' ), 10, 3 );
 		add_action( 'admin_notices', array( $bulk_blacklist, 'print_admin_notice' ) );
-
 	}
 
 	protected function define_settings_tabs_hooks() {
@@ -201,8 +199,6 @@ class Woo_Manage_Fraud_Orders {
 	/**
 	 *
 	 * Order_MetaBox
-	 *
-	 * WMFO_Order_MetaBox constructor.
 	 */
 	protected function define_order_metabox_hooks() {
 

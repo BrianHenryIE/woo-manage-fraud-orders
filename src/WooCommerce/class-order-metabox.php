@@ -9,7 +9,7 @@
 namespace PrasidhdaMalla\Woo_Manage_Fraud_Orders\WooCommerce;
 
 /**
- * Class WMFO_Order_MetaBox
+ * Class Order_MetaBox
  */
 class Order_MetaBox {
 
@@ -32,6 +32,7 @@ class Order_MetaBox {
 		if ( 'pending' !== $order->get_status() ) {
 			return;
 		}
+
 		add_meta_box(
 			'wmfo-order-metabox',
 			__( 'WMFO', 'woo-manage-fraud-orders' ),
@@ -84,13 +85,9 @@ class Order_MetaBox {
 	 * @param int $post_id The id of the post (order) being edited.
 	 */
 	public function save_order_meta_box_data( int $post_id ) {
-		// Check if our nonce is set.
-		if ( ! isset( $_POST['wmfo_skip_blacklist_nonce'] ) ) {
-			return;
-		}
 
 		// Verify that the nonce is valid.
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['wmfo_skip_blacklist_nonce'] ) ), 'wmfo_skip_blacklisting_nonce' ) ) {
+		if ( ! isset( $_POST['wmfo_skip_blacklist_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['wmfo_skip_blacklist_nonce'] ) ), 'wmfo_skip_blacklisting_nonce' ) ) {
 			return;
 		}
 
@@ -99,22 +96,17 @@ class Order_MetaBox {
 			return;
 		}
 
-		// Check the user's permissions.
-		if ( isset( $_POST['post_type'] ) && 'shop_order' === $_POST['post_type'] ) {
+		// Sanitize input.
+		$wmfo_skip_blacklist = isset( $_POST['wmfo_skip_blacklist'] ) ? sanitize_text_field( wp_unslash( $_POST['wmfo_skip_blacklist'] ) ) : null;
 
-			if ( ! current_user_can( 'edit_page', $post_id ) ) {
-				return;
-			}
-		} else {
-			if ( ! current_user_can( 'edit_post', $post_id ) ) {
-				return;
-			}
+		if ( empty( $wmfo_skip_blacklist ) ) {
+			return;
 		}
 
-		/* OK, it's safe for us to save the data now. */
-
-		// Sanitize user input.
-		$wmfo_skip_blacklist = isset( $_POST['wmfo_skip_blacklist'] ) ? sanitize_text_field( wp_unslash( $_POST['wmfo_skip_blacklist'] ) ) : null;
+		// Check the user's permissions.
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			return;
+		}
 
 		// Update the meta field in the database.
 		update_post_meta( $post_id, 'wmfo_skip_blacklist', $wmfo_skip_blacklist );
