@@ -88,9 +88,6 @@ wp-content/
 wordpress
 /vendor/
 
-*.zip
-*.phar
-
 # Generated from GitHub Secrets in the workflows.
 .env.secret
 auth.json
@@ -99,3 +96,5 @@ auth.json
 pcov.sh
 xdebug.sh
 7.4linux.sh
+
+*.phar
