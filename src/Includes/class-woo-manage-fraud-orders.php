@@ -64,15 +64,10 @@ class Woo_Manage_Fraud_Orders {
 		add_action( 'init', array( $i18n, 'load_plugin_textdomain' ) );
 	}
 
-	/**
-	 * Define constants
-	 */
 	protected function define_constants() {
+
 		$upload_dir = wp_upload_dir( null, false );
 
-		$this->define( 'WMFO_ABSPATH', dirname( WMFO_PLUGIN_FILE ) . '/' );
-		$this->define( 'WMFO_PLUGIN_BASENAME', plugin_basename( WMFO_PLUGIN_FILE ) );
-		$this->define( 'WMFO_VERSION', $this->version );
 		$this->define( 'WMFO_LOG_DIR', $upload_dir['basedir'] . '/wmfo-logs/' );
 	}
 
@@ -105,66 +100,19 @@ class Woo_Manage_Fraud_Orders {
 
 		$plugins_page = new Plugins_Page();
 
-		if ( defined( 'WMFO_PLUGIN_FILE' ) ) {
-			$plugin_basename = plugin_basename( WMFO_PLUGIN_FILE );
-		} else {
-			$plugin_basename = 'woo-manage-fraud-orders/woo-manage-fraud-orders.php';
-		}
+		$plugin_basename = defined( 'WMFO_PLUGIN_BASENAME' )
+			? WMFO_PLUGIN_BASENAME
+			: 'woo-manage-fraud-orders/woo-manage-fraud-orders.php';
 
 		add_filter( 'plugin_action_links_' . $plugin_basename, array( $plugins_page, 'action_links' ), 99, 1 );
 	}
 
 	public function define_dependencies_notice_hooks() {
+
 		$dependencies = new Dependencies();
+
 		add_action( 'plugins_loaded', array( $dependencies, 'init_wp_dependency_installer' ) );
 		add_filter( 'wp_dependency_dismiss_label', array( $dependencies, 'set_admin_notice_name' ), 10, 2 );
-	}
-
-	/**
-	 * Check is WooCommerce active.
-	 * Create log dir
-	 * Create log db table
-	 */
-	public function install() {
-
-		if ( ! function_exists( 'is_plugin_active_for_network' ) ) {
-			require_once ABSPATH . '/wp-admin/includes/plugin.php';
-		}
-
-		// multisite
-		if ( is_multisite() ) {
-			// this plugin is network activated - Woo must be network activated
-			if ( is_plugin_active_for_network( plugin_basename( __FILE__ ) ) ) {
-				$need = ! is_plugin_active_for_network( 'woocommerce/woocommerce.php' );
-				// this plugin is locally activated - Woo can be network or locally activated
-			} else {
-				$need = ! is_plugin_active( 'woocommerce/woocommerce.php' );
-			}
-			// this plugin runs on a single site
-		} else {
-			$need = ! is_plugin_active( 'woocommerce/woocommerce.php' );
-		}
-
-		if ( $need ) {
-
-			echo sprintf( esc_html__( 'Woo Manage Fraud Orders depends on %s to work!', 'woo-manage-fraud-orders' ), '<a href="https://wordpress.org/plugins/woocommerce/" target="_blank">' . esc_html__( 'WooCommerce', 'woo-manage-fraud-orders' ) . '</a>' );
-			@trigger_error( '', E_USER_ERROR );
-		}
-
-		$this->may_be_create_log_dir_db_table();
-
-	}
-
-	/**
-	 * Function to handle the creation of debug folder and DB table
-	 */
-	public function may_be_create_log_dir_db_table() {
-		require_once plugin_dir_path( WMFO_PLUGIN_FILE ) . 'includes/class-wmfo-activator.php';
-
-		WMFO_Activator::create_db_table();
-
-		WMFO_Activator::create_upload_dir();
-
 	}
 
 

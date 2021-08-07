@@ -26,4 +26,15 @@ class Plugin_Integration_Test extends \Codeception\TestCase\WPTestCase {
 		$this->assertInstanceOf( Woo_Manage_Fraud_Orders::class, $GLOBALS['woo_manage_fraud_orders'] );
 	}
 
+    /**
+     * @see register_activation_hook()
+     */
+	public function test_activator_registered() {
+
+        /** WP_Hook[] */
+        global $wp_filter;
+
+        $this->assertArrayHasKey('activate_woo-manage-fraud-orders/woo-manage-fraud-orders.php', $wp_filter );
+    }
+
 }

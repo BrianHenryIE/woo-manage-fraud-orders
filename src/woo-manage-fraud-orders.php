@@ -15,16 +15,20 @@
  * @package woo-manage-fraud-orders
  */
 
+use PrasidhdaMalla\Woo_Manage_Fraud_Orders\Includes\Activator;
 use PrasidhdaMalla\Woo_Manage_Fraud_Orders\Includes\Woo_Manage_Fraud_Orders;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
+require_once __DIR__ . '/autoload.php';
+
 define( 'WMFO_PLUGIN_FILE', __FILE__ );
 define( 'WMFO_VERSION', '2.0.2' );
+define( 'WMFO_PLUGIN_BASENAME', plugin_basename( WMFO_PLUGIN_FILE ) );
 
-require_once __DIR__ . '/autoload.php';
+register_activation_hook( __FILE__, array( Activator::class, 'activate' ) );
 
 // Initialize the plugin.
 $GLOBALS['woo_manage_fraud_orders'] = new Woo_Manage_Fraud_Orders();
