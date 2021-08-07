@@ -8,6 +8,9 @@
 
 namespace PrasidhdaMalla\Woo_Manage_Fraud_Orders\API;
 
+use PrasidhdaMalla\Woo_Manage_Fraud_Orders\API\Logger\Debug_Log;
+use PrasidhdaMalla\Woo_Manage_Fraud_Orders\API\Logger\Logs_Handler;
+
 /**
  * Class Blacklist_Handler
  */
@@ -17,11 +20,11 @@ class Blacklist_Handler {
 	/**
 	 * Get an array of the saved blacklists.
 	 *
-	 * @used-by self::init()
+	 * @used-by Blacklist_Handler::init()
 	 *
 	 * @return array<string,string|array>
 	 */
-	public static function get_blacklists(): array {
+	public function get_blacklists(): array {
 		return array(
 			'prev_black_list_ips'        => get_option( 'wmfo_black_list_ips', '' ),
 			'prev_wmfo_black_list_names' => get_option( 'wmfo_black_list_names', '' ),
@@ -40,7 +43,7 @@ class Blacklist_Handler {
 	 * @param string $to_add The value(s) to add.
 	 * @param string $action "add"|"remove".
 	 */
-	public static function update_blacklist( $key, $pre_values, $to_add, $action = 'add' ) {
+	public function update_blacklist( $key, $pre_values, $to_add, $action = 'add' ) {
 		$new_values = null;
 		$to_add     = str_replace( PHP_EOL, '', $to_add );
 		if ( 'add' === $action ) {
@@ -76,24 +79,24 @@ class Blacklist_Handler {
 	 * When $context is front, we are customer facing so throw an exception to display an error to them.
 	 *
 	 * @param array<string,string|array>|false $customer Customer details (optional if an order is provided).
-	 * @param ?WC_Order                        $order A WooCommerce order (option if customer details are provided).
+	 * @param ?\WC_Order                       $order A WooCommerce order (option if customer details are provided).
 	 * @param string                           $action "add"|"remove".
 	 * @param string                           $context "front"|"order-pay-eway".
 	 *
 	 * @return bool
-	 * @throws Exception
+	 * @throws \Exception
 	 * @see wmfo_get_customer_details_of_order()
 	 */
-	public static function init( $customer = array(), $order = null, $action = 'add', $context = 'front' ): bool {
-		$prev_blacklisted_data = self::get_blacklists();
+	public function init( $customer = array(), $order = null, $action = 'add', $context = 'front' ): bool {
+		$prev_blacklisted_data = $this->get_blacklists();
 		if ( empty( $customer ) ) {
 			return false;
 		}
 
-		self::update_blacklist( 'wmfo_black_list_names', $prev_blacklisted_data['prev_wmfo_black_list_names'], $customer['full_name'], $action );
-		self::update_blacklist( 'wmfo_black_list_ips', $prev_blacklisted_data['prev_black_list_ips'], $customer['ip_address'], $action );
-		self::update_blacklist( 'wmfo_black_list_phones', $prev_blacklisted_data['prev_black_list_phones'], $customer['billing_phone'], $action );
-		self::update_blacklist( 'wmfo_black_list_emails', $prev_blacklisted_data['prev_black_list_emails'], $customer['billing_email'], $action );
+		$this->update_blacklist( 'wmfo_black_list_names', $prev_blacklisted_data['prev_wmfo_black_list_names'], $customer['full_name'], $action );
+		$this->update_blacklist( 'wmfo_black_list_ips', $prev_blacklisted_data['prev_black_list_ips'], $customer['ip_address'], $action );
+		$this->update_blacklist( 'wmfo_black_list_phones', $prev_blacklisted_data['prev_black_list_phones'], $customer['billing_phone'], $action );
+		$this->update_blacklist( 'wmfo_black_list_emails', $prev_blacklisted_data['prev_black_list_emails'], $customer['billing_email'], $action );
 		// If billing and shipping address are the same, only save one.
 		$addresses = implode(
 			PHP_EOL,
@@ -105,11 +108,11 @@ class Blacklist_Handler {
 			)
 		);
 
-		self::update_blacklist( 'wmfo_black_list_addresses', $prev_blacklisted_data['prev_black_list_addresses'], $addresses, $action );
+		$this->update_blacklist( 'wmfo_black_list_addresses', $prev_blacklisted_data['prev_black_list_addresses'], $addresses, $action );
 
 		if ( 'front' === $context ) {
 			$GLOBALS['first_caught_blacklisted_reason'] = __( 'Max Fraud Attempts exceeded', 'woo-manage-fraud-orders' );
-			WMFO_Blacklist_Handler::add_to_log( $customer );
+			$this->add_to_log( $customer );
 		}
 
 		// Handle the cancellation of order.
@@ -117,10 +120,10 @@ class Blacklist_Handler {
 			$default_notice          = esc_html__( 'Sorry, You are being restricted from placing orders.', 'woo-manage-fraud-orders' );
 			$wmfo_black_list_message = get_option( 'wmfo_black_list_message', $default_notice );
 
-			self::cancel_order( $order, $action );
+			$this->cancel_order( $order, $action );
 
 			if ( 'front' === $context ) {
-				throw new Exception( $wmfo_black_list_message );
+				throw new \Exception( $wmfo_black_list_message );
 			}
 
 			if ( in_array( $context, array( 'order-pay', 'order-pay-eway' ), true ) ) {
@@ -148,12 +151,12 @@ class Blacklist_Handler {
 	 *
 	 * When $action=='remove' it adds a note saying the details are no longer blacklisted.
 	 *
-	 * @param WC_Order $order The WooCommerce order.
-	 * @param string   $action "add"|"remove".
+	 * @param \WC_Order $order The WooCommerce order.
+	 * @param string    $action "add"|"remove".
 	 *
 	 * @return bool Always returns true.
 	 */
-	public static function cancel_order( $order, $action = 'add' ): bool {
+	public function cancel_order( $order, $action = 'add' ): bool {
 		if ( 'remove' === $action ) {
 			$order->add_order_note( apply_filters( 'wmfo_remove_blacklisted_order_note', esc_html__( 'Order details removed from blacklist.', 'woo-manage-fraud-orders' ) ) );
 
@@ -173,7 +176,7 @@ class Blacklist_Handler {
 	/**
 	 * Show the blocked message to the customer.
 	 */
-	public static function show_blocked_message() {
+	public function show_blocked_message() {
 		$default_notice          = esc_html__( 'Sorry, You are being restricted from placing orders.', 'woo-manage-fraud-orders' );
 		$wmfo_black_list_message = get_option( 'wmfo_black_list_message', $default_notice );
 
@@ -187,13 +190,13 @@ class Blacklist_Handler {
 	/**
 	 * @param $customer_details
 	 */
-	public static function add_to_log( $customer_details ) {
+	public function add_to_log( $customer_details ) {
 		global $first_caught_blacklisted_reason;
 		// Add log to file
 		$wmfo_enable_debug_log = get_option( 'wmfo_enable_debug_log', 'no' );
 
 		if ( $wmfo_enable_debug_log === 'yes' ) {
-			$debug_log = new WMFO_Debug_Log();
+			$debug_log = new Debug_Log();
 			$debug_log->write( '----------start------------' );
 			$debug_log->write( 'Customer Details ==>' );
 			$debug_log->write( $customer_details );
@@ -222,7 +225,7 @@ class Blacklist_Handler {
 				'timestamp'          => current_time( 'mysql' ),
 			);
 
-			$logs_handler = new WMFO_Logs_Handler();
+			$logs_handler = new Logs_Handler();
 			$logs_handler->add_log( $log_data );
 		}
 
@@ -237,7 +240,7 @@ class Blacklist_Handler {
 	 *
 	 * @return bool
 	 */
-	public static function is_whitelisted( $customer_details ): bool {
+	public function is_whitelisted( $customer_details ): bool {
 
 		$wmfo_white_listed_payment_gateways = get_option( 'wmfo_white_listed_payment_gateways', array() );
 		$wmfo_white_listed_customers        = get_option( 'wmfo_white_listed_customers', array() );
@@ -259,7 +262,7 @@ class Blacklist_Handler {
 	 * @return bool
 	 * @see wmfo_get_customer_details_of_order()
 	 */
-	public static function is_blacklisted( $customer_details ): bool {
+	public function is_blacklisted( $customer_details ): bool {
 		// Check for ony by one, return TRUE as soon as first matching.
 		$allow_blacklist_by_name    = get_option( 'wmfo_allow_blacklist_by_name', 'no' );
 		$blacklisted_customer_names = get_option( 'wmfo_black_list_names' );

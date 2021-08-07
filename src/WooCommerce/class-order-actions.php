@@ -7,7 +7,7 @@
 
 namespace PrasidhdaMalla\Woo_Manage_Fraud_Orders\WooCommerce;
 
-use PrasidhdaMalla\Woo_Manage_Fraud_Orders\Includes\Blacklist_Handler;
+use PrasidhdaMalla\Woo_Manage_Fraud_Orders\API\Blacklist_Handler;
 use function PrasidhdaMalla\Woo_Manage_Fraud_Orders\wmfo_get_customer_details_of_order;
 
 /**
@@ -25,7 +25,7 @@ class Order_Actions {
 	 *
 	 * @return array<string, string>
 	 */
-	public static function add_new_order_action( $order_actions ): array {
+	public function add_new_order_action( $order_actions ): array {
 		// Show this only if customer details of this order is in blacklist.
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
@@ -45,9 +45,10 @@ class Order_Actions {
 			}
 
 			$order_actions['black_list_order'] = __( 'Blacklist order', 'woo-manage-fraud-orders' );
+			$blacklist_handler                 = new Blacklist_Handler();
 			// Check if the order details of this current order is in blacklist.
 			$customer = wmfo_get_customer_details_of_order( $order );
-			if ( false !== $customer && Blacklist_Handler::is_blacklisted( $customer ) ) {
+			if ( false !== $customer && $blacklist_handler->is_blacklisted( $customer ) ) {
 				$order_actions['remove_from_black_list'] = __( 'Remove from Blacklist', 'woo-manage-fraud-orders' );
 			}
 		}
@@ -67,12 +68,14 @@ class Order_Actions {
 	 *
 	 * @throws \Exception
 	 */
-	public static function update_blacklist( $post_id, $post ) {
+	public function update_blacklist( $post_id, $post ) {
 		$order = wc_get_order( $post_id );
 
 		if ( ! ( $order instanceof \WC_Order ) ) {
 			return;
 		}
+
+		$blacklist_handler = new Blacklist_Handler();
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Missing
 		$action = isset( $_POST['wc_order_action'] ) ? sanitize_text_field( wp_unslash( $_POST['wc_order_action'] ) ) : null;
@@ -83,13 +86,13 @@ class Order_Actions {
 			if ( 'black_list_order' === $action ) {
 				// update the blacklists.
 				if ( method_exists( 'WMFO_Blacklist_Handler', 'init' ) ) {
-					Blacklist_Handler::init( $customer, $order, 'add', 'back' );
+					$blacklist_handler->init( $customer, $order, 'add', 'back' );
 				}
 			} elseif ( 'remove_from_black_list' === $action ) {
 				// Remove the customer details from blacklist.
 				// update the blacklists.
 				if ( method_exists( 'WMFO_Blacklist_Handler', 'init' ) ) {
-					Blacklist_Handler::init( $customer, $order, 'remove', 'back' );
+					$blacklist_handler->init( $customer, $order, 'remove', 'back' );
 				}
 			}
 		}

@@ -23,7 +23,7 @@ class Settings_Tab {
 	 * @see WC_Admin_Settings::output()
 	 * @see \Automattic\WooCommerce\Admin\Features\Navigation\CoreMenu::get_setting_items()
 	 */
-	public static function add_settings_tab( array $settings_tabs ): array {
+	public function add_settings_tab( array $settings_tabs ): array {
 		$settings_tabs['settings_tab_blacklists'] = esc_html__( 'Blacklisted Customers', 'woo-manage-fraud-orders' );
 
 		return $settings_tabs;
@@ -35,10 +35,10 @@ class Settings_Tab {
 	 * @hooked woocommerce_settings_tabs_settings_tab_blacklists
 	 *
 	 * @uses woocommerce_admin_fields()
-	 * @uses self::get_settings()
+	 * @uses Settings_Tab::get_settings()
 	 */
-	public static function settings_tab() {
-		woocommerce_admin_fields( self::get_settings() );
+	public function settings_tab() {
+		woocommerce_admin_fields( $this->get_settings() );
 	}
 
 	/**
@@ -47,10 +47,10 @@ class Settings_Tab {
 	 * @hooked woocommerce_update_options_settings_tab_blacklists
 	 *
 	 * @uses woocommerce_update_options()
-	 * @uses self::get_settings()
+	 * @uses Settings_Tab::get_settings()
 	 */
-	public static function update_settings() {
-		woocommerce_update_options( self::get_settings() );
+	public function update_settings() {
+		woocommerce_update_options( $this->get_settings() );
 	}
 
 	/**
@@ -67,7 +67,7 @@ class Settings_Tab {
 	 *
 	 * @see WMFO_Settings_Tab::get_settings()
 	 */
-	public static function update_setting_filter( $value, $option, $raw_value ) {
+	public function update_setting_filter( $value, $option, $raw_value ) {
 		if ( in_array(
 			$option['id'],
 			array(
@@ -93,7 +93,7 @@ class Settings_Tab {
 	 * @return array<string, array<string, mixed>> Array of settings for WooCommerce to display.
 	 * @see woocommerce_admin_fields() function.
 	 */
-	public static function get_settings(): array {
+	public function get_settings(): array {
 		$settings = array(
 			'section_title'                     => array(
 				'name' => esc_html__( 'Blacklisted Customers', 'woo-manage-fraud-orders' ),

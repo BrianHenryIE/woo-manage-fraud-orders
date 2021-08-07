@@ -21,7 +21,7 @@ class Plugins_Page {
 	 * @param array<string|int, string> $actions The existing registered links.
 	 * @return array<string|int, string>
 	 */
-	public static function action_links( $actions ): array {
+	public function action_links( $actions ): array {
 
 		$new_actions = array(
 			'settings' => '<a href="' . admin_url( 'admin.php?page=wc-settings&tab=settings_tab_blacklists' ) . '">' . __( 'Settings', 'woo-manage-fraud-orders' ) . '</a>',

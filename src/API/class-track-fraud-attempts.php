@@ -142,7 +142,8 @@ class Track_Fraud_Attempts {
 	public function manage_blacklisted_customers( $customer_details, $product_items, $order = null ) {
 		// White list check
 		// If chosen payment gateway is on the whitelist, skip the blacklist check
-		if ( WMFO_Blacklist_Handler::is_whitelisted( $customer_details ) ) {
+		$blacklist_handler = new Blacklist_Handler();
+		if ( $blacklist_handler->is_whitelisted( $customer_details ) ) {
 
 			return;
 		}
@@ -164,10 +165,10 @@ class Track_Fraud_Attempts {
 		$customer_details['ip_address'] = method_exists( 'WC_Geolocation', 'get_ip_address' ) ? WC_Geolocation::get_ip_address() : wmfo_get_ip_address();
 
 		// Block this checkout if this customers details are already blacklisted.
-		if ( WMFO_Blacklist_Handler::is_blacklisted( $customer_details ) ) {
+		if ( $blacklist_handler->is_blacklisted( $customer_details ) ) {
 			if ( method_exists( 'WMFO_Blacklist_Handler', 'show_blocked_message' ) ) {
-				WMFO_Blacklist_Handler::show_blocked_message();
-				WMFO_Blacklist_Handler::add_to_log( $customer_details );
+				$blacklist_handler->show_blocked_message();
+				$blacklist_handler->add_to_log( $customer_details );
 			}
 			return;
 		}
@@ -217,8 +218,8 @@ class Track_Fraud_Attempts {
 				if ( in_array( $prev_order->post_status, $blacklists_order_status, true ) ) {
 					if ( method_exists( 'WMFO_Blacklist_Handler', 'show_blocked_message' ) ) {
 						$GLOBALS['first_caught_blacklisted_reason'] = __( 'Order Status', 'woo-manage-fraud-orders' );
-						WMFO_Blacklist_Handler::show_blocked_message();
-						WMFO_Blacklist_Handler::add_to_log( $customer_details );
+						$blacklist_handler->show_blocked_message();
+						$blacklist_handler->add_to_log( $customer_details );
 					}
 					break;
 				}
@@ -237,7 +238,7 @@ class Track_Fraud_Attempts {
 	 * @param array<string, mixed> $_posted_data The checkout data.
 	 * @param WC_Order             $order The WooCommerce order.
 	 *
-	 * @throws Exception
+	 * @throws \Exception
 	 */
 	public function manage_multiple_failed_attempts_checkout( $_order_id, $_posted_data, $order ) {
 		$this->manage_multiple_failed_attempts( $order );
@@ -250,7 +251,7 @@ class Track_Fraud_Attempts {
 	 *
 	 * @param WC_Order $order The WooCommerce order object.
 	 *
-	 * @throws Exception
+	 * @throws \Exception
 	 */
 	public function manage_multiple_failed_attempts_order_pay( $order ) {
 		$this->manage_multiple_failed_attempts( $order, 'order-pay' );
@@ -259,12 +260,12 @@ class Track_Fraud_Attempts {
 	/**
 	 * Triggered when a payment with the gateway fails.
 	 *
-	 * @param WC_Order        $order The order whose payment failed.
-	 * @param stdClass        $_result The result from the API call.
-	 * @param string          $_error The error message.
-	 * @param WC_Gateway_EWAY $_gateway The instance of the gateway.
+	 * @param WC_Order         $order The order whose payment failed.
+	 * @param \stdClass        $_result The result from the API call.
+	 * @param string           $_error The error message.
+	 * @param \WC_Gateway_EWAY $_gateway The instance of the gateway.
 	 *
-	 * @throws Exception
+	 * @throws \Exception
 	 */
 	public function manage_multiple_failed_attempts_eway( $order, $_result, $_error, $_gateway ) {
 
@@ -280,7 +281,7 @@ class Track_Fraud_Attempts {
 	 * @param WC_Order $order The WooCommerce order object.
 	 * @param string   $context "front"|"order-pay"|"order-pay-eway".
 	 *
-	 * @throws Exception
+	 * @throws \Exception
 	 */
 	protected function manage_multiple_failed_attempts( $order, $context = 'front' ) {
 		// As very first step, check if there is product type blacklist.
@@ -311,12 +312,14 @@ class Track_Fraud_Attempts {
 			// Get the allowed failed order limit, default to 5.
 			$fraud_limit = get_option( 'wmfo_black_list_allowed_fraud_attempts', 5 );
 
+			$blacklist_handler = new Blacklist_Handler();
+
 			if ( (int) $fraud_attempts >= (int) $fraud_limit ) {
 				// Block this customer for future sessions as well.
 				// And cancel the order.
 				$customer = wmfo_get_customer_details_of_order( $order );
 				if ( false !== $customer && method_exists( 'WMFO_Blacklist_Handler', 'init' ) ) {
-					WMFO_Blacklist_Handler::init( $customer, $order, 'add', $context );
+					$blacklist_handler->init( $customer, $order, 'add', $context );
 				}
 			}
 		}
@@ -340,7 +343,7 @@ class Track_Fraud_Attempts {
 
 		foreach ( $product_items as $item ) {
 			$product_obj = wc_get_product( $item );
-			if ( ! ( $product_obj instanceof WC_Product ) ) {
+			if ( ! ( $product_obj instanceof \WC_Product ) ) {
 				continue;
 			}
 			if ( in_array( $product_obj->get_type(), $blacklist_product_types, true ) ) {

@@ -7,7 +7,7 @@
 
 namespace PrasidhdaMalla\Woo_Manage_Fraud_Orders\WooCommerce;
 
-use PrasidhdaMalla\Woo_Manage_Fraud_Orders\Includes\Blacklist_Handler;
+use PrasidhdaMalla\Woo_Manage_Fraud_Orders\API\Blacklist_Handler;
 use function PrasidhdaMalla\Woo_Manage_Fraud_Orders\wmfo_get_customer_details_of_order;
 
 /**
@@ -56,10 +56,11 @@ class Bulk_Blacklist {
 			}
 
 			// Get customer's IP address, billing phone and Email Address.
-			$customer = wmfo_get_customer_details_of_order( $order );
+			$customer          = wmfo_get_customer_details_of_order( $order );
+			$blacklist_handler = new Blacklist_Handler();
 			// update the blacklists.
 			if ( method_exists( 'WMFO_Blacklist_Handler', 'init' ) ) {
-				Blacklist_Handler::init( $customer, $order, 'add', 'back' );
+				$blacklist_handler->init( $customer, $order, 'add', 'back' );
 			}
 		}
 		$redirect_to = wp_nonce_url(
