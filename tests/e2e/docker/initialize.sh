@@ -26,7 +26,7 @@ wp plugin install wordpress-importer --activate
 echo "Importing WooCommerce sample products..."
 wp import wp-content/plugins/woocommerce/sample-data/sample_products.xml --authors=skip
 
-echo "Installing and activating the Basic Auth plugin..."
+echo "Installing basic-auth to interact with the API..."
 wp plugin install https://github.com/WP-API/basic-auth/archive/master.zip --activate
 
 echo "Setting pretty permalinks..."
