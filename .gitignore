@@ -45,7 +45,6 @@ Thumbs.db
 *.diff
 *.err
 *.orig
-*.log
 *.rej
 *.swo
 *.swp
@@ -54,8 +53,6 @@ Thumbs.db
 *.sass-cache
 
 # OS or Editor folders
-.DS_Store
-Thumbs.db
 .cache
 .project
 .settings
