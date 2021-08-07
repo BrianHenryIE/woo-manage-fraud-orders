@@ -49,7 +49,7 @@ class Woo_Manage_Fraud_Orders_Integration_Test extends \Codeception\TestCase\WPT
             array( 'woocommerce_checkout_order_processed', Track_Fraud_Attempts::class, 'manage_multiple_failed_attempts_checkout', 100, 3 ),
 
             array( 'plugin_action_links_woo-manage-fraud-orders/woo-manage-fraud-orders.php', Plugins_Page::class, 'action_links', 99, 1 ),
-            array( 'plugins_loaded', I18n::class, 'load_plugin_textdomain' ),
+            array( 'init', I18n::class, 'load_plugin_textdomain' ),
         );
         return $hooks;
     }

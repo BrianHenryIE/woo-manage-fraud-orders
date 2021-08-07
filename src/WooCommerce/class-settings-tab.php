@@ -10,7 +10,7 @@ namespace PrasidhdaMalla\Woo_Manage_Fraud_Orders\WooCommerce;
 /**
  * Class Settings_Tab
  */
-class WMFO_Settings_Tab {
+class Settings_Tab {
 
 	/**
 	 * Add a new settings tab to the WooCommerce settings tabs array.hp

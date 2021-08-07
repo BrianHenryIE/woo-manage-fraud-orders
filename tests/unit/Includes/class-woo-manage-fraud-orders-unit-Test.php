@@ -29,20 +29,10 @@ class Woo_Manage_Fraud_Orders_Unit_Test extends \Codeception\Test\Unit {
 	 */
 	public function test_set_locale_hooked() {
 
-	    global $plugin_basename;
-
 		\WP_Mock::expectActionAdded(
-			'plugins_loaded',
+			'init',
 			array( new AnyInstance( I18n::class ), 'load_plugin_textdomain' )
 		);
-
-        \WP_Mock::userFunction(
-            'plugin_basename',
-            array(
-                'args'   => array( \WP_Mock\Functions::type( 'string' ) ),
-                'return' => $plugin_basename
-            )
-        );
 
 		new Woo_Manage_Fraud_Orders();
 	}

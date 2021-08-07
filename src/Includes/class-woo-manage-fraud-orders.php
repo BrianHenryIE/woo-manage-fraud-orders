@@ -61,7 +61,7 @@ class Woo_Manage_Fraud_Orders {
 
 		$i18n = new I18n();
 
-		add_action( 'plugins_loaded', array( $i18n, 'load_plugin_textdomain' ) );
+		add_action( 'init', array( $i18n, 'load_plugin_textdomain' ) );
 	}
 
 	/**

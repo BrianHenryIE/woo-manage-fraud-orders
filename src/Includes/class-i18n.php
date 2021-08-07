@@ -18,7 +18,7 @@ class I18n {
 	/**
 	 * Load text domain for translation
 	 *
-	 * @hooked plugins_loaded
+	 * @hooked init
 	 */
 	public function load_plugin_textdomain() {
 		load_plugin_textdomain(

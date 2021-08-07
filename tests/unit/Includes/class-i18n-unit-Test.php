@@ -31,19 +31,30 @@ class I18n_Unit_Test extends \Codeception\Test\Unit {
 	 */
 	public function test_load_plugin_textdomain() {
 
-		global $plugin_root_dir;
+        global $plugin_root_dir;
 
-		\WP_Mock::userFunction(
-			'load_plugin_textdomain',
-			array(
+        \WP_Mock::userFunction(
+            'plugin_basename',
+            array(
+                'args'   => array(
+                    \WP_Mock\Functions::type( 'string' )
+                ),
+                'return' => 'woo-manage-fraud-orders',
+                'times' => 1
+            )
+        );
+
+        \WP_Mock::userFunction(
+            'load_plugin_textdomain',
+            array(
                 'times' => 1,
-				'args' => array(
-					'woo-manage-fraud-orders',
-					false,
-					$plugin_root_dir . '/languages/',
-				),
-			)
-		);
+                'args'   => array(
+                    'woo-manage-fraud-orders',
+                    false,
+                    'woo-manage-fraud-orders/languages/',
+                )
+            )
+        );
 
         $i18n = new I18n();
         $i18n->load_plugin_textdomain();
