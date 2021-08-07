@@ -53,8 +53,6 @@ Thumbs.db
 *.sass-cache
 
 # OS or Editor folders
-.DS_Store
-Thumbs.db
 .cache
 .project
 .settings
@@ -87,8 +85,6 @@ wp-content/
 wordpress
 /vendor/
 
-*.phar
-
 # Generated from GitHub Secrets in the workflows.
 .env.secret
 auth.json
@@ -99,4 +95,3 @@ xdebug.sh
 7.4linux.sh
 
 package-lock.json
-
