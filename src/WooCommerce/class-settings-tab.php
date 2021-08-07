@@ -65,7 +65,7 @@ class Settings_Tab {
 	 * @return mixed
 	 * @see WC_Admin_Settings::save_fields()
 	 *
-	 * @see WMFO_Settings_Tab::get_settings()
+	 * @see Settings_Tab::get_settings()
 	 */
 	public function update_setting_filter( $value, $option, $raw_value ) {
 		if ( in_array(

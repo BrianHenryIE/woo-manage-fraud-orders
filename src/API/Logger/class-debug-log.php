@@ -8,7 +8,7 @@ class Debug_Log {
 	public $log_file_name = null;
 
 	/**
-	 * WMFO_Log constructor.
+	 * Debug_Log constructor.
 	 *
 	 * @param null $path
 	 * @param null $file_name

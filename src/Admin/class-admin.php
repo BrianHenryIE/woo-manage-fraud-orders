@@ -26,7 +26,7 @@ class Admin {
 	/**
 	 * Register the stylesheets for the admin area.
 	 *
-	 * Previously this was printed inline, ocnditionally if we were on the correct settings tab.
+	 * Previously this was printed inline, conditionally if we were on the correct settings tab.
 	 *
 	 * @hooked admin_enqueue_scripts
 	 *
@@ -39,5 +39,6 @@ class Admin {
 		wp_enqueue_style( 'woo-manage-fraud-orders', plugin_dir_url( __FILE__ ) . 'css/woo-manage-fraud-orders-admin.css', array(), $version, 'all' );
 
 	}
+
 
 }

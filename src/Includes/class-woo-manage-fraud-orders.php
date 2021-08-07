@@ -35,6 +35,8 @@ class Woo_Manage_Fraud_Orders {
 	 */
 	public function __construct() {
 
+		$this->define_constants();
+
 		$this->set_locale();
 
 		$this->define_admin_hooks();
@@ -165,33 +167,6 @@ class Woo_Manage_Fraud_Orders {
 		// Not part of WooCommerce core.
 		add_action( 'woocommerce_api_wc_gateway_eway_payment_failed', array( $track_fraud_attempts, 'manage_multiple_failed_attempts_eway' ), 100, 4 );
 		add_action( 'woocommerce_checkout_order_processed', array( $track_fraud_attempts, 'manage_multiple_failed_attempts_checkout' ), 100, 3 );
-	}
-
-	public function init_sub_menu() {
-		add_submenu_page(
-			'woocommerce',
-			__( 'WMFO Logs', 'woo-manage-fraud-orders' ),
-			__( 'WMFO Logs', 'woo-manage-fraud-orders' ),
-			'manage_options',
-			'wmfo-logs',
-			array( $this, 'render_logs' ),
-			99999
-		);
-	}
-
-	public function render_logs() {
-		require_once plugin_dir_path( WMFO_PLUGIN_FILE ) . 'includes/admin/class-wmfo-logs-table.php';
-		$logs = new WMFO_Logs_Table();
-		$logs->prepare_items();
-		?>
-		<div class="wrap">
-			<form method="post">
-				<h2><?php _e( 'Logs of Blacklisted attempts.', 'woo-manage-fraud-orders' ); ?></h2>
-				<p><?php _e( 'This is not the blacklisted customer details. Rather,  It is the list of customers who could not manage to place order due to blacklisting.', 'woo-manage-fraud-orders' ); ?></p>
-				<?php $logs->display(); ?>
-			</form>
-		</div>
-		<?php
 	}
 
 }

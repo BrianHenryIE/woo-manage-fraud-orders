@@ -16,7 +16,6 @@ use PrasidhdaMalla\Woo_Manage_Fraud_Orders\API\Logger\Logs_Handler;
  */
 class Blacklist_Handler {
 
-
 	/**
 	 * Get an array of the saved blacklists.
 	 *
@@ -43,7 +42,7 @@ class Blacklist_Handler {
 	 * @param string $to_add The value(s) to add.
 	 * @param string $action "add"|"remove".
 	 */
-	public function update_blacklist( $key, $pre_values, $to_add, $action = 'add' ) {
+	public function update_blacklist( string $key, string $pre_values, string $to_add, string $action = 'add' ) {
 		$new_values = null;
 		$to_add     = str_replace( PHP_EOL, '', $to_add );
 		if ( 'add' === $action ) {

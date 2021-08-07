@@ -3,6 +3,7 @@
  * Fired during plugin activation.
  *
  * NB: Activation only runs the on plugin activation, it does not run when plugins are upgraded.
+ *
  * @see https://developer.wordpress.org/reference/functions/register_activation_hook/#comment-2100
  */
 
@@ -10,6 +11,7 @@ namespace PrasidhdaMalla\Woo_Manage_Fraud_Orders\Includes;
 
 /**
  * Class Activator
+ *
  * @package PrasidhdaMalla\Woo_Manage_Fraud_Orders\Includes
  */
 class Activator {

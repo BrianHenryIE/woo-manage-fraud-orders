@@ -6,6 +6,7 @@ use PrasidhdaMalla\Woo_Manage_Fraud_Orders\API\Logger\Logs_Handler;
  * Create a new table class that will extend the WP_List_Table
  */
 class Logs_Table extends WP_List_Table {
+
 	/**
 	 * Prepare the items for the table to process
 	 *

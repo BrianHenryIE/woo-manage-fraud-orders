@@ -166,10 +166,8 @@ class Track_Fraud_Attempts {
 
 		// Block this checkout if this customers details are already blacklisted.
 		if ( $blacklist_handler->is_blacklisted( $customer_details ) ) {
-			if ( method_exists( 'WMFO_Blacklist_Handler', 'show_blocked_message' ) ) {
 				$blacklist_handler->show_blocked_message();
 				$blacklist_handler->add_to_log( $customer_details );
-			}
 			return;
 		}
 
@@ -216,11 +214,9 @@ class Track_Fraud_Attempts {
 			foreach ( $prev_orders_customers as $prev_order ) {
 
 				if ( in_array( $prev_order->post_status, $blacklists_order_status, true ) ) {
-					if ( method_exists( 'WMFO_Blacklist_Handler', 'show_blocked_message' ) ) {
 						$GLOBALS['first_caught_blacklisted_reason'] = __( 'Order Status', 'woo-manage-fraud-orders' );
 						$blacklist_handler->show_blocked_message();
 						$blacklist_handler->add_to_log( $customer_details );
-					}
 					break;
 				}
 			}
@@ -318,7 +314,7 @@ class Track_Fraud_Attempts {
 				// Block this customer for future sessions as well.
 				// And cancel the order.
 				$customer = wmfo_get_customer_details_of_order( $order );
-				if ( false !== $customer && method_exists( 'WMFO_Blacklist_Handler', 'init' ) ) {
+				if ( false !== $customer ) {
 					$blacklist_handler->init( $customer, $order, 'add', $context );
 				}
 			}

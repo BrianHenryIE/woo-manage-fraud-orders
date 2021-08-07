@@ -15,6 +15,9 @@ use function PrasidhdaMalla\Woo_Manage_Fraud_Orders\wmfo_get_customer_details_of
  */
 class Order_Actions {
 
+	const BLACK_LIST_ORDER_ACTION             = 'black_list_order';
+	const REMOVE_FROM_BLACK_LIST_ORDER_ACTION = 'remove_from_black_list';
+
 	/**
 	 * Add an order action. i.e. on the single order edit screen beside the "update" button.
 	 *
@@ -44,12 +47,12 @@ class Order_Actions {
 				return $order_actions;
 			}
 
-			$order_actions['black_list_order'] = __( 'Blacklist order', 'woo-manage-fraud-orders' );
-			$blacklist_handler                 = new Blacklist_Handler();
+			$order_actions[ self::BLACK_LIST_ORDER_ACTION ] = __( 'Blacklist order', 'woo-manage-fraud-orders' );
+			$blacklist_handler                              = new Blacklist_Handler();
 			// Check if the order details of this current order is in blacklist.
 			$customer = wmfo_get_customer_details_of_order( $order );
 			if ( false !== $customer && $blacklist_handler->is_blacklisted( $customer ) ) {
-				$order_actions['remove_from_black_list'] = __( 'Remove from Blacklist', 'woo-manage-fraud-orders' );
+				$order_actions[ self::REMOVE_FROM_BLACK_LIST_ORDER_ACTION ] = __( 'Remove from Blacklist', 'woo-manage-fraud-orders' );
 			}
 		}
 
@@ -83,17 +86,17 @@ class Order_Actions {
 			// Get customer's IP address, billing phone and Email Address.
 			$customer = wmfo_get_customer_details_of_order( $order );
 			// Add the customer details to Blacklist.
-			if ( 'black_list_order' === $action ) {
+			if ( self::BLACK_LIST_ORDER_ACTION === $action ) {
 				// update the blacklists.
-				if ( method_exists( 'WMFO_Blacklist_Handler', 'init' ) ) {
-					$blacklist_handler->init( $customer, $order, 'add', 'back' );
-				}
-			} elseif ( 'remove_from_black_list' === $action ) {
+
+				$blacklist_handler->init( $customer, $order, 'add', 'back' );
+
+			} elseif ( self::REMOVE_FROM_BLACK_LIST_ORDER_ACTION === $action ) {
 				// Remove the customer details from blacklist.
 				// update the blacklists.
-				if ( method_exists( 'WMFO_Blacklist_Handler', 'init' ) ) {
-					$blacklist_handler->init( $customer, $order, 'remove', 'back' );
-				}
+
+				$blacklist_handler->init( $customer, $order, 'remove', 'back' );
+
 			}
 		}
 	}
