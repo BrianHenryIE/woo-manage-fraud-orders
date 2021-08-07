@@ -82,12 +82,11 @@ class Woo_Manage_Fraud_Orders {
 	 * @param string $name The name of the constant to define .
 	 * @param mixed  $value The value of the constant .
 	 */
-	protected function define( $name, $value )
-    {
-        if (!defined($name)) {
-            define($name, $value);
-        }
-    }
+	protected function define( $name, $value ) {
+		if ( ! defined( $name ) ) {
+			define( $name, $value );
+		}
+	}
 
 	/*
 	 * Register all of the hooks related to the admin area functionality
