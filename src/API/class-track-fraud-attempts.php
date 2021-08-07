@@ -9,7 +9,9 @@
 namespace PrasidhdaMalla\Woo_Manage_Fraud_Orders\API;
 
 use WC_Geolocation;
+use WC_Order;
 use WC_Order_Item_Product;
+use WP_Error;
 use function PrasidhdaMalla\Woo_Manage_Fraud_Orders\wmfo_get_customer_details_of_order;
 use function PrasidhdaMalla\Woo_Manage_Fraud_Orders\wmfo_get_ip_address;
 
@@ -26,9 +28,9 @@ class Track_Fraud_Attempts {
 	 * @see WC_Checkout::get_posted_data()
 	 *
 	 * @param array<string, mixed> $data An array of posted data.
-	 * @param \WP_Error            $errors A WP Error object to add errors to.
+	 * @param WP_Error             $errors A WP Error object to add errors to.
 	 */
-	public static function manage_blacklisted_customers_checkout( $data, $errors ) {
+	public function manage_blacklisted_customers_checkout( $data, $errors ) {
 		// Check if there are any other errors first.
 		// If there are, return.
 		if ( ! empty( $errors->errors ) ) {
@@ -64,12 +66,32 @@ class Track_Fraud_Attempts {
 
 		$customer_details = array();
 
-		$first_name                    = isset( $data['billing_first_name'] ) ? $data['billing_first_name'] : '';
-		$last_name                     = isset( $data['billing_last_name'] ) ? $data['billing_last_name'] : '';
+		$first_name                    = $data['billing_first_name'] ?? '';
+		$last_name                     = $data['billing_last_name'] ?? '';
 		$customer_details['full_name'] = $first_name . ' ' . $last_name;
 
-		$customer_details['billing_email'] = isset( $data['billing_email'] ) ? $data['billing_email'] : '';
-		$customer_details['billing_phone'] = isset( $data['billing_phone'] ) ? $data['billing_phone'] : '';
+		$customer_details['billing_email']  = $data['billing_email'] ?? '';
+		$customer_details['billing_phone']  = $data['billing_phone'] ?? '';
+		$customer_details['payment_method'] = $data['payment_method'] ?? '';
+
+		$customer_details['billing_address'] = array(
+			$data['billing_address_1'],
+			$data['billing_address_2'],
+			$data['billing_city'],
+			$data['billing_state'],
+			$data['billing_postcode'],
+			$data['billing_country'],
+		);
+		if ( isset( $data['shipping_country'] ) ) {
+			$customer_details['shipping_address'] = array(
+				$data['shipping_address_1'],
+				$data['shipping_address_2'],
+				$data['shipping_city'],
+				$data['shipping_state'],
+				$data['shipping_postcode'],
+				$data['shipping_country'],
+			);
+		}
 
 		$cart_items = WC()->cart->get_cart();
 
@@ -77,7 +99,7 @@ class Track_Fraud_Attempts {
 		foreach ( $cart_items as $product_item ) {
 			$product_items[] = $product_item['product_id'];
 		}
-		self::manage_blacklisted_customers( $customer_details, $product_items );
+		$this->manage_blacklisted_customers( $customer_details, $product_items );
 	}
 
 	/**
@@ -86,9 +108,9 @@ class Track_Fraud_Attempts {
 	 * @hooked woocommerce_before_pay_action
 	 * @see WC_Form_Handler::pay_action()
 	 *
-	 * @param \WC_Order $order The WooCommerce order object.
+	 * @param WC_Order $order The WooCommerce order object.
 	 */
-	public static function manage_blacklisted_customers_order_pay( $order ) {
+	public function manage_blacklisted_customers_order_pay( $order ) {
 
 		$customer_details = wmfo_get_customer_details_of_order( $order );
 
@@ -104,7 +126,7 @@ class Track_Fraud_Attempts {
 			$product_items[] = $product_item->get_product_id();
 		}
 
-		self::manage_blacklisted_customers( $customer_details, $product_items, $order );
+		$this->manage_blacklisted_customers( $customer_details, $product_items, $order );
 	}
 
 	/**
@@ -113,11 +135,18 @@ class Track_Fraud_Attempts {
 	 *
 	 * @see wmfo_get_customer_details_of_order()
 	 *
-	 * @param array<string,string> $customer_details The customer details that might be blacklisted.
-	 * @param int[]                $product_items The product ids in the order.
-	 * @param ?\WC_Order           $order The WooCommerce order.
+	 * @param array<string,string|array> $customer_details The customer details that might be blacklisted.
+	 * @param int[]                      $product_items The product ids in the order.
+	 * @param ?WC_Order                  $order The WooCommerce order.
 	 */
-	public static function manage_blacklisted_customers( $customer_details, $product_items, $order = null ) {
+	public function manage_blacklisted_customers( $customer_details, $product_items, $order = null ) {
+		// White list check
+		// If chosen payment gateway is on the whitelist, skip the blacklist check
+		if ( WMFO_Blacklist_Handler::is_whitelisted( $customer_details ) ) {
+
+			return;
+		}
+
 		// As very first step, check if there is skipping set for order pay.
 		if ( null !== $order ) {
 			$order_id = $order->get_id();
@@ -128,32 +157,18 @@ class Track_Fraud_Attempts {
 
 		// If there are values set to this, we should handle the blacklisting only if customer has such products in cart.
 		$blacklist_product_types = get_option( 'wmfo_black_list_product_types', array() );
-		if ( ! empty( $blacklist_product_types ) && ! self::check_products_in_product_type_blacklist( $product_items ) ) {
+		if ( ! empty( $blacklist_product_types ) && ! $this->check_products_in_product_type_blacklist( $product_items ) ) {
 			return;
 		}
 
 		$customer_details['ip_address'] = method_exists( 'WC_Geolocation', 'get_ip_address' ) ? WC_Geolocation::get_ip_address() : wmfo_get_ip_address();
 
-		$domain                  = substr( $customer_details['billing_email'], strpos( $customer_details['billing_email'], '@' ) + 1 );
-		$allow_blacklist_by_name = get_option( 'wmfo_allow_blacklist_by_name', 'no' );
-		$prev_black_list_names   = get_option( 'wmfo_black_list_names', '' );
-
-		$prev_black_list_ips           = get_option( 'wmfo_black_list_ips', '' );
-		$prev_black_list_phones        = get_option( 'wmfo_black_list_phones', '' );
-		$prev_black_list_emails        = get_option( 'wmfo_black_list_emails', '' );
-		$prev_black_list_email_domains = get_option( 'wmfo_black_list_email_domains', '' );
-
 		// Block this checkout if this customers details are already blacklisted.
-		if ( $customer_details['full_name'] && 'yes' === $allow_blacklist_by_name && $prev_black_list_names && in_array( $customer_details['full_name'], explode( PHP_EOL, $prev_black_list_names ), true ) ||
-			$customer_details['ip_address'] && $prev_black_list_ips && in_array( $customer_details['ip_address'], explode( PHP_EOL, $prev_black_list_ips ), true ) ||
-			$prev_black_list_phones && $customer_details['billing_phone'] && in_array( $customer_details['billing_phone'], explode( PHP_EOL, $prev_black_list_phones ), true ) ||
-			$customer_details['billing_email'] && $prev_black_list_emails && in_array( $customer_details['billing_email'], explode( PHP_EOL, $prev_black_list_emails ), true ) ||
-			$domain && $prev_black_list_email_domains && in_array( $domain, explode( PHP_EOL, $prev_black_list_email_domains ), true )
-		) {
+		if ( WMFO_Blacklist_Handler::is_blacklisted( $customer_details ) ) {
 			if ( method_exists( 'WMFO_Blacklist_Handler', 'show_blocked_message' ) ) {
-				Blacklist_Handler::show_blocked_message();
+				WMFO_Blacklist_Handler::show_blocked_message();
+				WMFO_Blacklist_Handler::add_to_log( $customer_details );
 			}
-
 			return;
 		}
 
@@ -201,7 +216,9 @@ class Track_Fraud_Attempts {
 
 				if ( in_array( $prev_order->post_status, $blacklists_order_status, true ) ) {
 					if ( method_exists( 'WMFO_Blacklist_Handler', 'show_blocked_message' ) ) {
-						Blacklist_Handler::show_blocked_message();
+						$GLOBALS['first_caught_blacklisted_reason'] = __( 'Order Status', 'woo-manage-fraud-orders' );
+						WMFO_Blacklist_Handler::show_blocked_message();
+						WMFO_Blacklist_Handler::add_to_log( $customer_details );
 					}
 					break;
 				}
@@ -218,12 +235,12 @@ class Track_Fraud_Attempts {
 	 *
 	 * @param int                  $_order_id The order id.
 	 * @param array<string, mixed> $_posted_data The checkout data.
-	 * @param \WC_Order            $order The WooCommerce order.
+	 * @param WC_Order             $order The WooCommerce order.
 	 *
-	 * @throws \Exception
+	 * @throws Exception
 	 */
-	public static function manage_multiple_failed_attempts_checkout( $_order_id, $_posted_data, $order ) {
-		self::manage_multiple_failed_attempts( $order );
+	public function manage_multiple_failed_attempts_checkout( $_order_id, $_posted_data, $order ) {
+		$this->manage_multiple_failed_attempts( $order );
 	}
 
 	/**
@@ -231,25 +248,27 @@ class Track_Fraud_Attempts {
 	 * @hooked woocommerce_after_pay_action
 	 * @see WC_Form_Handler::pay_action()
 	 *
-	 * @param \WC_Order $order The WooCommerce order object.
+	 * @param WC_Order $order The WooCommerce order object.
 	 *
-	 * @throws \Exception
+	 * @throws Exception
 	 */
-	public static function manage_multiple_failed_attempts_order_pay( $order ) {
-		self::manage_multiple_failed_attempts( $order, 'order-pay' );
+	public function manage_multiple_failed_attempts_order_pay( $order ) {
+		$this->manage_multiple_failed_attempts( $order, 'order-pay' );
 	}
 
 	/**
 	 * Triggered when a payment with the gateway fails.
 	 *
-	 * @param \WC_Order        $order The order whose payment failed.
-	 * @param \stdClass        $_result The result from the API call.
-	 * @param string           $_error The error message.
-	 * @param \WC_Gateway_EWAY $_gateway The instance of the gateway.
+	 * @param WC_Order        $order The order whose payment failed.
+	 * @param stdClass        $_result The result from the API call.
+	 * @param string          $_error The error message.
+	 * @param WC_Gateway_EWAY $_gateway The instance of the gateway.
+	 *
+	 * @throws Exception
 	 */
-	public static function manage_multiple_failed_attempts_eway( $order, $_result, $_error, $_gateway ) {
+	public function manage_multiple_failed_attempts_eway( $order, $_result, $_error, $_gateway ) {
 
-		self::manage_multiple_failed_attempts( $order, 'order-pay-eway' );
+		$this->manage_multiple_failed_attempts( $order, 'order-pay-eway' );
 	}
 
 	/**
@@ -258,12 +277,12 @@ class Track_Fraud_Attempts {
 	 * order by customer, This is helpful when customer enter the correct format of the data but payment gateway
 	 * couldn't authorize the payment. Typical example will be Electronic check, CC processing.
 	 *
-	 * @param \WC_Order $order The WooCommerce order object.
-	 * @param string    $context "front"|"order-pay"|"order-pay-eway".
+	 * @param WC_Order $order The WooCommerce order object.
+	 * @param string   $context "front"|"order-pay"|"order-pay-eway".
 	 *
-	 * @throws \Exception
+	 * @throws Exception
 	 */
-	protected static function manage_multiple_failed_attempts( $order, $context = 'front' ) {
+	protected function manage_multiple_failed_attempts( $order, $context = 'front' ) {
 		// As very first step, check if there is product type blacklist.
 		// If there are values set to this, we should handle the blacklisting only if customer has such products in cart.
 		$product_items = array();
@@ -278,7 +297,7 @@ class Track_Fraud_Attempts {
 
 		// If the product type blacklist is configured but none of the order's products are relevant, return.
 		$blacklist_product_types = get_option( 'wmfo_black_list_product_types', array() );
-		if ( ! empty( $blacklist_product_types ) && ! self::check_products_in_product_type_blacklist( $product_items ) ) {
+		if ( ! empty( $blacklist_product_types ) && ! $this->check_products_in_product_type_blacklist( $product_items ) ) {
 			return;
 		}
 
@@ -297,7 +316,7 @@ class Track_Fraud_Attempts {
 				// And cancel the order.
 				$customer = wmfo_get_customer_details_of_order( $order );
 				if ( false !== $customer && method_exists( 'WMFO_Blacklist_Handler', 'init' ) ) {
-					Blacklist_Handler::init( $customer, $order, 'add', $context );
+					WMFO_Blacklist_Handler::init( $customer, $order, 'add', $context );
 				}
 			}
 		}
@@ -310,7 +329,7 @@ class Track_Fraud_Attempts {
 	 *
 	 * @return bool
 	 */
-	public static function check_products_in_product_type_blacklist( $product_items = array() ): bool {
+	public function check_products_in_product_type_blacklist( $product_items = array() ): bool {
 		$blacklist_product_types = get_option( 'wmfo_black_list_product_types', array() );
 
 		if ( empty( $blacklist_product_types ) ) {
@@ -321,7 +340,7 @@ class Track_Fraud_Attempts {
 
 		foreach ( $product_items as $item ) {
 			$product_obj = wc_get_product( $item );
-			if ( ! ( $product_obj instanceof \WC_Product ) ) {
+			if ( ! ( $product_obj instanceof WC_Product ) ) {
 				continue;
 			}
 			if ( in_array( $product_obj->get_type(), $blacklist_product_types, true ) ) {
