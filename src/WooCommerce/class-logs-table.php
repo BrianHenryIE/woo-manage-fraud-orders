@@ -1,18 +1,11 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
-	exit();
-}
 
-// WP_List_Table is not loaded automatically so we need to load it in our application
-if ( ! class_exists( 'WP_List_Table' ) ) {
-	require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
-}
-
+use PrasidhdaMalla\Woo_Manage_Fraud_Orders\API\Logger\Logs_Handler;
 
 /**
  * Create a new table class that will extend the WP_List_Table
  */
-class WMFO_Logs_Table extends WP_List_Table {
+class Logs_Table extends WP_List_Table {
 	/**
 	 * Prepare the items for the table to process
 	 *
@@ -166,7 +159,7 @@ class WMFO_Logs_Table extends WP_List_Table {
 	 * @access public
 	 */
 	public function delete_log( $id ) {
-		$log_handler = new WMFO_Logs_Handler();
+		$log_handler = new Logs_Handler();
 		$log_handler->delete_log( $id );
 	}
 

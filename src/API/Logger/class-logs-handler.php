@@ -1,10 +1,8 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit();
-}
+namespace PrasidhdaMalla\Woo_Manage_Fraud_Orders\API\Logger;
 
-class WMFO_Logs_Handler {
+class Logs_Handler {
 	public $table = 'wmfo_logs';
 
 	/**
