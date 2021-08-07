@@ -47,12 +47,24 @@ class Plugin_Unit_Test extends \Codeception\Test\Unit {
 		);
 
 		\WP_Mock::userFunction(
-			'register_activation_hook'
+			'register_activation_hook',
+            array(
+                'args'   => array(
+                    \WP_Mock\Functions::type( 'string' ),
+                    \WP_Mock\Functions::type( 'array' )
+                )
+            )
 		);
 
-//		\WP_Mock::userFunction(
-//			'register_deactivation_hook'
-//		);
+		\WP_Mock::userFunction(
+			'register_deactivation_hook',
+            array(
+                'args'   => array(
+                    \WP_Mock\Functions::type( 'string' ),
+                    \WP_Mock\Functions::type( 'array' )
+                )
+            )
+		);
 
 
         ob_start();

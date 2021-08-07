@@ -29,12 +29,24 @@ class Plugin_Integration_Test extends \Codeception\TestCase\WPTestCase {
     /**
      * @see register_activation_hook()
      */
-	public function test_activator_registered() {
+    public function test_activator_registered() {
 
         /** WP_Hook[] */
         global $wp_filter;
 
         $this->assertArrayHasKey('activate_woo-manage-fraud-orders/woo-manage-fraud-orders.php', $wp_filter );
+    }
+
+
+    /**
+     * @see register_deactivation_hook()
+     */
+    public function test_deactivator_registered() {
+
+        /** WP_Hook[] */
+        global $wp_filter;
+
+        $this->assertArrayHasKey('deactivate_woo-manage-fraud-orders/woo-manage-fraud-orders.php', $wp_filter );
     }
 
 }

@@ -16,6 +16,7 @@
  */
 
 use PrasidhdaMalla\Woo_Manage_Fraud_Orders\Includes\Activator;
+use PrasidhdaMalla\Woo_Manage_Fraud_Orders\Includes\Deactivator;
 use PrasidhdaMalla\Woo_Manage_Fraud_Orders\Includes\Woo_Manage_Fraud_Orders;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -29,6 +30,7 @@ define( 'WMFO_VERSION', '2.0.2' );
 define( 'WMFO_PLUGIN_BASENAME', plugin_basename( WMFO_PLUGIN_FILE ) );
 
 register_activation_hook( __FILE__, array( Activator::class, 'activate' ) );
+register_deactivation_hook( __FILE__, array( Deactivator::class, 'deactivate' ) );
 
 // Initialize the plugin.
 $GLOBALS['woo_manage_fraud_orders'] = new Woo_Manage_Fraud_Orders();

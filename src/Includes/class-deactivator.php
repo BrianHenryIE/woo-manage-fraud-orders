@@ -1,9 +1,11 @@
 <?php
 
+namespace PrasidhdaMalla\Woo_Manage_Fraud_Orders\Includes;
+
 /**
  * Fired during plugin deactivation.
  */
-class WMFO_Deactivator {
+class Deactivator {
 
 	public static function deactivate() {
 
