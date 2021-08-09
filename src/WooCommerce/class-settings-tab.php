@@ -7,6 +7,9 @@
 
 namespace PrasidhdaMalla\Woo_Manage_Fraud_Orders\WooCommerce;
 
+use function PrasidhdaMalla\Woo_Manage_Fraud_Orders\wmfp_get_customers;
+use function PrasidhdaMalla\Woo_Manage_Fraud_Orders\wmfp_get_enabled_payment_gateways;
+
 /**
  * Class Settings_Tab
  */

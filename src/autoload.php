@@ -40,3 +40,5 @@ foreach ( $class_map_files as $class_map_file ) {
 
 $wpcs_autoloader = new WP_Namespace_Autoloader();
 $wpcs_autoloader->init();
+
+require_once __DIR__ . '/wmfo-functions.php';
