@@ -1,6 +1,9 @@
 <?php
 
+namespace PrasidhdaMalla\Woo_Manage_Fraud_Orders\Admin;
+
 use PrasidhdaMalla\Woo_Manage_Fraud_Orders\API\Logger\Logs_Handler;
+use WP_List_Table;
 
 /**
  * Create a new table class that will extend the WP_List_Table

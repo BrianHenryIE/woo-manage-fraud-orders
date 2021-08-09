@@ -2,8 +2,6 @@
 
 namespace PrasidhdaMalla\Woo_Manage_Fraud_Orders\Admin;
 
-use Logs_Table;
-
 class Logs_Page {
 
 	public function init_sub_menu() {

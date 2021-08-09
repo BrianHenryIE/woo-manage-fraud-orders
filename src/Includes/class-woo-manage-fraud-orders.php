@@ -11,6 +11,7 @@ namespace PrasidhdaMalla\Woo_Manage_Fraud_Orders\Includes;
 
 use PrasidhdaMalla\Woo_Manage_Fraud_Orders\Admin\Admin;
 use PrasidhdaMalla\Woo_Manage_Fraud_Orders\Admin\Dependencies;
+use PrasidhdaMalla\Woo_Manage_Fraud_Orders\Admin\Logs_Page;
 use PrasidhdaMalla\Woo_Manage_Fraud_Orders\Admin\Plugins_Page;
 use PrasidhdaMalla\Woo_Manage_Fraud_Orders\API\Track_Fraud_Attempts;
 use PrasidhdaMalla\Woo_Manage_Fraud_Orders\WooCommerce\Bulk_Blacklist;
@@ -96,13 +97,14 @@ class Woo_Manage_Fraud_Orders {
 	 * Register all of the hooks related to the admin area functionality
 	 * of the plugin.
 	 *
-	 * @since    1.0.0
 	 */
 	protected function define_admin_hooks() {
 
 		$plugin_admin = new Admin();
-
 		add_action( 'admin_enqueue_scripts', array( $plugin_admin, 'enqueue_styles' ) );
+
+		$logs_page = new Logs_Page();
+        add_action('admin_menu', array($logs_page, 'init_sub_menu'), 9999);
 	}
 
 	protected function define_plugins_page_hooks() {
