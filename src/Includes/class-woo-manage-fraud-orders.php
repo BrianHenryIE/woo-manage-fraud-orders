@@ -39,6 +39,8 @@ class Woo_Manage_Fraud_Orders {
 
 		$this->set_locale();
 
+		$this->upgrade();
+
 		$this->define_admin_hooks();
 		$this->define_dependencies_notice_hooks();
 		$this->define_plugins_page_hooks();
@@ -65,6 +67,11 @@ class Woo_Manage_Fraud_Orders {
 
 		add_action( 'init', array( $i18n, 'load_plugin_textdomain' ) );
 	}
+
+	protected function upgrade() {
+	    $upgrader = new Upgrader();
+	    $upgrader->upgrade();
+    }
 
 	protected function define_constants() {
 
