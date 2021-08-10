@@ -23,6 +23,10 @@ class Plugins_Page {
 	 */
 	public function action_links( $actions ): array {
 
+		if ( ! is_plugin_active( 'woocommerce/woocommerce/php' ) ) {
+			return $actions;
+		}
+
 		$new_actions = array(
 			'settings' => '<a href="' . admin_url( 'admin.php?page=wc-settings&tab=settings_tab_blacklists' ) . '">' . __( 'Settings', 'woo-manage-fraud-orders' ) . '</a>',
 		);
