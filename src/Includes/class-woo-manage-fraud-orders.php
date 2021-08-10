@@ -70,9 +70,9 @@ class Woo_Manage_Fraud_Orders {
 	}
 
 	protected function upgrade() {
-	    $upgrader = new Upgrader();
-	    $upgrader->upgrade();
-    }
+		$upgrader = new Upgrader();
+		$upgrader->upgrade();
+	}
 
 	protected function define_constants() {
 
@@ -104,7 +104,7 @@ class Woo_Manage_Fraud_Orders {
 		add_action( 'admin_enqueue_scripts', array( $plugin_admin, 'enqueue_styles' ) );
 
 		$logs_page = new Logs_Page();
-        add_action('admin_menu', array($logs_page, 'init_sub_menu'), 9999);
+		add_action( 'admin_menu', array( $logs_page, 'init_sub_menu' ), 9999 );
 	}
 
 	protected function define_plugins_page_hooks() {

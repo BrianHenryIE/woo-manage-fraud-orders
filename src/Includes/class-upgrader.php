@@ -13,7 +13,7 @@ class Upgrader {
 		$new_vesion = '2.3.1';
 		$version    = get_option( 'woo_manage_fraud_orders_version', '0.0.0' );
 
-		if ( version_compare( $version, '2.3.1', '<' ) ) {
+		if ( version_compare( $version, '2.2.0', '<' ) ) {
 			$this->create_db_table();
 		}
 

@@ -137,7 +137,7 @@ class Blacklist_Handler {
 					wp_safe_redirect( $order->get_checkout_payment_url( false ) );
 					exit();
 				} else {
-					throw new Exception();
+					throw new \Exception();
 				}
 			}
 		}

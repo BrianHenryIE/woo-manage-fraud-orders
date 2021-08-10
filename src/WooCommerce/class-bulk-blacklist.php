@@ -59,7 +59,7 @@ class Bulk_Blacklist {
 			$customer          = wmfo_get_customer_details_of_order( $order );
 			$blacklist_handler = new Blacklist_Handler();
 			// update the blacklists.
-				$blacklist_handler->init( $customer, $order, 'add', 'back' );
+			$blacklist_handler->init( $customer, $order, 'add', 'back' );
 		}
 		$redirect_to = wp_nonce_url(
 			add_query_arg(

@@ -22,10 +22,9 @@ class Activator {
 	 *
 	 * @hooked register_activation_hook
 	 */
-	public static function activate()
-    {
-        self::install();
-    }
+	public static function activate() {
+		self::install();
+	}
 
 
 	/**
